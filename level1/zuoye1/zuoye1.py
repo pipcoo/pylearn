@@ -16,7 +16,6 @@ f = open("account.txt","r",encoding="utf-8")
 for line in f:
     __account.append(line.split())
 f.close()
-print(__account)
 input_count=0
 pass_count=0
 change_tags=False
