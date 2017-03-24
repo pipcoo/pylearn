@@ -9,9 +9,12 @@
 3、用户选择商品后，检测余额是否够，够就直接扣款，不够就提醒
 4、可随时退出，退出时，打印已购买商品和余额
 5、在用户使用过程中， 关键输出，如余额，商品已加入购物车等消息，需高亮显示
-6、用户下一次登录后，输入用户名密码，直接回到上次的状态，即上次消费的余额什么的还是那些，再次登录可继续购买
+6、用户下一次登录后，输入用户名密码，直接回到上次的状态，
+   即上次消费的余额什么的还是那些，再次登录可继续购买
 7、允许查询之前的消费记录
 '''
+
+import time
 
 def read_of_file():
     f=open("account.txt","r",encoding="utf-8")
@@ -22,8 +25,8 @@ def read_of_file():
     return eval(menu)
 
 def login(username,password):
-    if username in __account:
-        if password == __account[username]['password']:
+    if username in __db[0]:
+        if password == __db[0][username]['password']:
             return True
         else:
             return False
@@ -31,43 +34,154 @@ def login(username,password):
         return False
 
 def first_login_check(username):
-    if __account[username]['salary'] == '':
+    if __db[0][username]['salary'] == '':
         return True
     else:
         return False
 
 def set_user_salary(username,salary):
-    __account[username]['salary']=salary
-    return  __account
+    __db[0][username]['salary']=salary
 
 def print_commodity():
-    for keys in __commodity:
-        print(keys,__commodity[keys][0],"¥",__commodity[keys][1])
+    for keys in __db[1]:
+        print(keys,__db[1][keys][0],"¥",__db[1][keys][1])
 
-def save_to_file(account,commodity):
-    __db['account']=__account['account']
-    __db['commodity']=__commodity['commodity']
+def save_to_file():
+    r=[]
+    r.append(__db[0])
+    r.append(__db[1])
     f=open("account.txt","w",encoding="utf-8")
-    f.write(__db)
+    f.write(str(r))
     f.close()
 
-f=read_of_file()
-__commodity=f['commodity']
-__account=f['account']
-shopping_flag=True
+def check_money(username,commodity_id):
+    expense=__db[1][commodity_id][1]
+    if len(__db[0][username]['shoppingcart']) > 0 :
+        for i in range(len(__db[0][username]['shoppingcart'])):
+            expense+=__db[0][username]['shoppingcart'][i][2]
+    if __db[0][username]['salary'] > expense:
+        return True
+    else:
+        return False
 
-while shopping_flag:
-    username=input('please input your username:')
-    password=input('please input your password:')
+def check_inventory(commodity_id):
+    if __db[1][commodity_id][2] > 0:
+        return True
+    else:
+        return False
+
+def add_commodity(username,commodity_id):
+    shoppingcart=__db[0][username]['shoppingcart']
+    commodity_info=[commodity_id,__db[1][commodity_id][0],__db[1][commodity_id][1],time.strftime('%Y-%m-%d %H:%M:%S')]
+    shoppingcart.append(commodity_info)
+    __db[0][username]['shoppingcart']=shoppingcart
+
+def settle_account():
+    shoppingcart = __db[0][username]['shoppingcart']
+    order= __db[0][username]['order']
+    for i in range(len(shoppingcart)):
+        order.append(shoppingcart[i])
+        __db[0][username]['salary']-=shoppingcart[i][2]
+        __db[1][shoppingcart[i][0]][2] -=1
+    __db[0][username]['order']=order
+    this_time_shopping=shoppingcart
+    __db[0][username]['shoppingcart']=[]
+    save_to_file()
+
+
+def shopping(username):
+    shopping_flag=True
+    while shopping_flag:
+        print_commodity()
+        __input=input('请输入需要购买物品的编码。【按q退出并结算】')
+
+        if __input=='q':
+            shopping_flag=False
+        elif __input in __db[1]:
+            commodity_inventory=check_inventory(__input)
+            if commodity_inventory :
+                enough_of_money = check_money(username,__input)
+                if enough_of_money:
+                    add_commodity(username,__input)
+                    print('已将%s加入购物车'%__input)
+                else:
+                    print('余额不足，请重新选择！')
+            else:
+                print('库存不足，请重新选择！')
+        else:
+            print('输入错误请重新输入')
+
+    #return False
+
+def look_shoppingcart(username):
+    shoppingcart=__db[0][username]['shoppingcart']
+
+    if len(shoppingcart) > 0 :
+        print("=============================================================================")
+        for i in range(len(shoppingcart)):
+            print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " %(shoppingcart[i][1],shoppingcart[i][2],shoppingcart[i][3]))
+        print("=============================================================================")
+    else:
+        print('你的购物车还空着呢，赶快去抢购吧~')
+        return True
+
+    __input=input("按q退出，按e结算退出")
+    if __input=='q':
+        return True
+    elif __input == 'e':
+        settle_account()
+        return False
+def look_historys(username):
+    order = __db[0][username]['order']
+    if len(order) > 0:
+        print( "=============================================================================")
+        for i in range(len(order)):
+            print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " % (
+                order[i][1], order[i][2], order[i][3]))
+        print( "=============================================================================")
+    else:
+        print("您还没有购物记录，赶快去抢购吧。")
+
+
+def print_this_time_shopping():
+    if len(this_time_shopping) > 0:
+        print( "=============================================================================")
+        for i in range(len(this_time_shopping)):
+            print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " % (
+                this_time_shopping[i][1], this_time_shopping[i][2], this_time_shopping[i][3]))
+        print( "=============================================================================")
+    else:
+        print("您没有任何物品，欢迎再次光临~")
+
+
+
+__db=[]
+f=read_of_file()
+__db.append(f['account'])
+__db.append(f['commodity'])
+this_time_shopping=[]
+exit_flag=True
+
+while exit_flag:
+    username=input('输入用户名:')
+    password=input('输入密码:')
     if login(username,password):
         if first_login_check(username):
-            salary=int(input('please input your salary:'))
+            salary=int(input('输入工资:'))
             set_user_salary(username,salary)
-        while shopping_flag:
-            print_commodity()
-            __input=input('please input your choose commodity No.[pass q to exit]\n >>')
+        while exit_flag:
+
+            print('''\na> 购买商品\nb> 查看购物车并结算\nc> 查看历史订单\nq> 退出\n''')
+            __input=input('输入编码：')
             if __input == 'q':
-                shopping_flag=False
+                print_this_time_shopping()
+                exit_flag = False
+            elif __input == 'a':
+                shopping_flag = shopping(username)
+            elif __input == 'b':
+                shopping_flag = look_shoppingcart(username)
+            elif __input == 'c':
+                shopping_flag = look_historys(username)
     else:
-        print("Wrong username or password.")
+        print("用户名或密码错误，请重新输入.")
 
