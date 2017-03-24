@@ -47,9 +47,9 @@ def print_commodity():
         print(keys,__db[1][keys][0],"¥",__db[1][keys][1])
 
 def save_to_file():
-    r=[]
-    r.append(__db[0])
-    r.append(__db[1])
+    r={}
+    r['account']=__db[0]
+    r['commodity'] = __db[1]
     f=open("account.txt","w",encoding="utf-8")
     f.write(str(r))
     f.close()
@@ -83,8 +83,8 @@ def settle_account():
         order.append(shoppingcart[i])
         __db[0][username]['salary']-=shoppingcart[i][2]
         __db[1][shoppingcart[i][0]][2] -=1
+        this_time_shopping.append(shoppingcart[i])
     __db[0][username]['order']=order
-    this_time_shopping=shoppingcart
     __db[0][username]['shoppingcart']=[]
     save_to_file()
 
@@ -93,7 +93,7 @@ def shopping(username):
     shopping_flag=True
     while shopping_flag:
         print_commodity()
-        __input=input('请输入需要购买物品的编码。【按q退出并结算】')
+        __input=input('请输入需要购买物品的编码。【按q返回上级】')
 
         if __input=='q':
             shopping_flag=False
@@ -131,6 +131,8 @@ def look_shoppingcart(username):
     elif __input == 'e':
         settle_account()
         return False
+
+
 def look_historys(username):
     order = __db[0][username]['order']
     if len(order) > 0:
@@ -151,7 +153,7 @@ def print_this_time_shopping():
                 this_time_shopping[i][1], this_time_shopping[i][2], this_time_shopping[i][3]))
         print( "=============================================================================")
     else:
-        print("您没有任何物品，欢迎再次光临~")
+        print("您未购买任何物品，欢迎再次光临~")
 
 
 
