@@ -150,11 +150,14 @@ def look_historys(username):
 
 def print_this_time_shopping(username):
     if len(this_time_shopping) > 0:
+        expense=0
         print( "=============================================================================")
         for i in range(len(this_time_shopping)):
             print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " % (
                 this_time_shopping[i][1], this_time_shopping[i][2], this_time_shopping[i][3]))
+            expense+=this_time_shopping[i][2]
         print( "=============================================================================")
+        print('您本次购物共消费：¥%d' % (expense))
         print('您账户余额为：¥%d'%(__db[0][username]['salary']))
     else:
         print("您未购买任何物品！")
