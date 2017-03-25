@@ -125,12 +125,15 @@ def look_shoppingcart(username):
         print('你的购物车还空着呢，赶快去抢购吧~')
         return True
 
-    __input=input("按q退出，按e结算退出")
+    __input=input("按‘q’退出，按‘c’清空购物车，按‘e’结算")
     if __input=='q':
         return True
     elif __input == 'e':
         settle_account()
         return False
+    elif __input=='c':
+        __db[0][username]['shoppingcart']=[]
+        print('购物车清空成功，赶快重新选购吧~')
 
 
 def look_historys(username):
@@ -145,16 +148,20 @@ def look_historys(username):
         print("您还没有购物记录，赶快去抢购吧。")
 
 
-def print_this_time_shopping():
+def print_this_time_shopping(username):
     if len(this_time_shopping) > 0:
         print( "=============================================================================")
         for i in range(len(this_time_shopping)):
             print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " % (
                 this_time_shopping[i][1], this_time_shopping[i][2], this_time_shopping[i][3]))
         print( "=============================================================================")
+        print('您账户余额为：¥%d'%(__db[0][username]['salary']))
     else:
-        print("您未购买任何物品，欢迎再次光临~")
-
+        print("您未购买任何物品！")
+        print("=============================================================================")
+        print('您账户余额为：¥%d' % (__db[0][username]['salary']))
+        print("=============================================================================")
+        print("欢迎再次光临~")
 
 
 __db=[]
@@ -171,12 +178,15 @@ while exit_flag:
         if first_login_check(username):
             salary=int(input('输入工资:'))
             set_user_salary(username,salary)
+        else:
+            print('您账户余额为：¥ %d'%(__db[0][username]['salary']))
         while exit_flag:
 
             print('''\na> 购买商品\nb> 查看购物车并结算\nc> 查看历史订单\nq> 退出\n''')
             __input=input('输入编码：')
             if __input == 'q':
-                print_this_time_shopping()
+                print_this_time_shopping(username)
+                save_to_file()
                 exit_flag = False
             elif __input == 'a':
                 shopping_flag = shopping(username)
