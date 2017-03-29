@@ -41,7 +41,37 @@ def read_cfg_file():
     return backend_list
 
 
+def list2dict(_inlist):
+    backend={}
+    record={}
+    server=''
+    for i in range(len(_inlist)):
+        list1 = _inlist[i].split()
+
+        if list1[0]=='backend':
+            backend['backend']=list1[1]
+        elif list1[0]=='server':
+            index_of_weight=list1.index('weight')
+            index_of_maxconn=list1.index('maxconn')
+            record['server']=",".join(list1[1:index_of_weight])
+            record['weight']=int(list1[index_of_weight+1])
+            record['maxconn']=int(list1[index_of_maxconn+1])
+    backend['record']=record
+    return backend
+
+def display1():
+    print('\t1、查询 \n \t2、添加 \n \t3、修改 \n \t4、删除 \n \t键入【q】 退出')
+    __input=input(">>")
+    return __input
+
 if __name__== '__main__':
+    backendset=[]
     list_of_file = read_cfg_file()
-    for i in range(len(list_of_file)):
-        print(list_of_file[i])
+    for i in range(1,len(list_of_file)):
+        backendset.append(list2dict(list_of_file[i]))
+
+
+    print(type(display1()))
+    print(display1())
+
+
