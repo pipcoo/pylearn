@@ -2,72 +2,46 @@
 # -*- coding: utf-8 -*-
 # @Author: wufeng
 
-def append_list(file,read_count):
+def append_list(file,read_count,rflag):     #将文件内容转换成列表 file传如打开的文件 read_count 传如当前已读取的位置 rflag 记录是否第一次读取到 backend 字段
+    read_flag = rflag
     file2list = []
     for line in file:
-        linesize=0
-        read_flag=True
         read_count+=len(line)
-        if len(line)>1:
-            linesize=len(line)
+        if len(line)>1:                     #判断读取的字段是否有数据 忽略 回车 换行符等
             line2list=line.replace("\r\n"," ").split()
             if line2list[0]=='backend' and read_flag:
-                seeknum[0]-=linesize
-                read_flag=False
+                read_count-=len(line)
+                file.seek(read_count)       #如果没第一次读取 backend 字段 则直接退出 设置标志位 减掉当前已读取的行
+                read_flag=False             #设置第一次读取 backend 字段为假
                 break
             elif line2list[0]=='backend' and not read_flag:
-                file2list.append(line)
+                file2list.append(line)      #不是第一次读取 到 backend 字段 则添加到列表中
                 read_flag = True
             else:
                 file2list.append(line)
-                #seeknum[1] = 1
-    return file2list,read_count
+    return file2list,read_count,read_flag
 
-def read_cfg():
+def read_cfg_file():
 
     f=open("haproxy.cfg","r",encoding="utf-8")
     read_count=0
+    filesize=0
+    for read in f:              #获取文件总长度
+        filesize+=len(read)
+    f.seek(0)                   #重置读取位置
     backend_list=[]
-    for line in f:
-        list1,read_count=append_list(f,read_count)
-        read_count+=len(line)
+    exit_flag=False
+    rflag = True                #是否读取过beckend字段标示
+    while not exit_flag :
+        list1, read_count,rflag = append_list(f, read_count,rflag)
         backend_list.append(list1)
-        f.seek(read_count - len(line))
+        if read_count ==filesize:
+            exit_flag=True      #读取到文件结尾 则退出循环
     f.close()
     return backend_list
 
-seeknum=[0,0]
-a=read_cfg()
 
-for i in range(1,len(a)):
-    print(a[i])
-#
-# def read_cfg():
-#     file2list = []
-#     f=open("haproxy.cfg","r",encoding="utf-8")
-#
-#     a=[]
-#     serverlist = []
-#     for line in f:
-#        key=""
-#
-#         seeknum[0]+=len(line)
-#         if(line.startswith(backend)){
-#         if(serverlist.length>1){
-#         file2list.append()
-#         }
-#         key = line.split("")[1]
-#         serverlist=[]
-#         }else{
-#         serverlist.append(line)
-#
-#         }
-#
-#
-#         a.append(append_list(f))
-#         f.seek(seeknum[0] - len(line))
-#
-# [key1:{'',''}]
-#
-#     f.close()
-#     return a
+if __name__== '__main__':
+    list_of_file = read_cfg_file()
+    for i in range(len(list_of_file)):
+        print(list_of_file[i])
