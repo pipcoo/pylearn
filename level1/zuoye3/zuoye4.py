@@ -35,7 +35,7 @@ def read_cfg_file():
     while not exit_flag :
         list1, read_count,rflag = append_list(f, read_count,rflag)
         backend_list.append(list1)
-        if read_count ==filesize:
+        if read_count >= filesize:
             exit_flag=True      #读取到文件结尾 则退出循环
     f.close()
     return backend_list
@@ -68,10 +68,13 @@ if __name__== '__main__':
     backendset=[]
     list_of_file = read_cfg_file()
     for i in range(1,len(list_of_file)):
-        backendset.append(list2dict(list_of_file[i]))
+         backendset.append(list2dict(list_of_file[i]))
 
+    __menu_input=display1()
+    a=''
+    for line in __menu_input:
+        a+=__menu_input
+    a=__menu_input.split("=")
 
-    print(type(display1()))
-    print(display1())
-
+    print(a)
 
