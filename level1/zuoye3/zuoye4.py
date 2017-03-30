@@ -16,24 +16,24 @@ import time
 
 """
 append_list 函数接受传入的打开文件实例 读取文件内容
-遇到 backend 关键字 就返回一个列表 病返回当前读取的位置 以及 是否存储过backend 信息
+遇到 backend 关键字 就返回一个列表 并返回当前读取的位置 以及 是否存储过backend 信息
 """
 
-def append_list(file,read_count,rflag):     #将文件内容转换成列表 file传如打开的文件 read_count 传如当前已读取的位置 rflag 记录是否第一次读取到 backend 字段
+def append_list(file,read_count,rflag):
     read_flag = rflag
     file2list = []
     for line in file:
         read_count+=len(line)
         if len(line)>1:                     #判断读取的字段是否有数据 忽略 回车 换行符等
             line2list=line.replace("\r\n"," ").split()
-            if line2list[0]=='backend' and read_flag:
+            if line2list[0]=='backend' and not read_flag:
                 read_count-=len(line)
                 file.seek(read_count)       #如果没第一次读取 backend 字段 则直接退出 设置标志位 减掉当前已读取的行
-                read_flag=False             #设置第一次读取 backend 字段为假
+                read_flag=True             #设置第一次读取 backend 字段为假
                 break
-            elif line2list[0]=='backend' and not read_flag:
+            elif line2list[0]=='backend' and  read_flag:
                 file2list.append(line)      #不是第一次读取 到 backend 字段 则添加到列表中
-                read_flag = True
+                read_flag = False
             else:
                 file2list.append(line)
     return file2list,read_count,read_flag
@@ -51,13 +51,10 @@ def read_cfg_file():
         filesize+=len(read)
     f.seek(0)                               #重置读取位置到开始
     backend_list=[]
-    exit_flag=False
-    rflag = True                            #是否读取过beckend字段标示
-    while not exit_flag :
+    rflag = False                           #是否存储过beckend字段标示
+    while read_count<  filesize :           #读取到文件结尾 则退出循环
         list1, read_count,rflag = append_list(f, read_count,rflag)
         backend_list.append(list1)
-        if read_count >= filesize:
-            exit_flag=True                  #读取到文件结尾 则退出循环
     f.close()
     return backend_list
 
@@ -90,12 +87,12 @@ display1 登录打印菜单信息 获取用户输入选择的菜单
 def display1():
     while True:
         print('\t1、查询 \n \t2、添加 \n \t3、修改 \n \t4、删除 \n \t键入【q】 退出')
-        __input=input(">>")
-        if __input in ('1','2','3','4','q'):
+        menu_select=input(">>")
+        if menu_select in ('1','2','3','4','q'):
             break
         else:
             print('\n 编号输入错误 请重新输入 \n')
-    return __input
+    return menu_select
 
 """
 backend_select 处理用户 查询backend的 功能
@@ -107,7 +104,10 @@ def backend_select(backendset):
         for i in range(len(backendset)):
             if backendset[i]['backend'] == __backend_input:
                 print("\nbackend: %s " %(__backend_input))
-                print("server: %s weight: %d maxconn: %d \r\n" % (backendset[i]['record']['server'],backendset[i]['record']['weight'],backendset[i]['record']['maxconn']))
+                print("server: %s weight: %d maxconn: %d \r\n" \
+                      % (backendset[i]['record']['server'], \
+                         backendset[i]['record']['weight'], \
+                         backendset[i]['record']['maxconn']))
                 break
             elif 'q' == __backend_input:
                 exit_flag=True
@@ -128,21 +128,37 @@ def backend_add(backendset):
             exit_flag=True
         elif '=' in __backend_input:                                      #判断用户输入是否包含 = 关键字
             __backend_add = eval(__backend_input.split('=')[1])         #以 = 分割 将=后信息转换为字典格式
-            if __backend_add.get('backend') and __backend_add.get('record','server') and __backend_add.get('record','weight') and __backend_add.get('record','maxconn'):
+            if __backend_add.get('backend') \
+                    and __backend_add.get('record','server') \
+                    and __backend_add.get('record','weight') \
+                    and __backend_add.get('record','maxconn'):
                                                                         #判断用户输入的信息是否符合要存入的格式
                 for i in range(len(backendset)):                        #遍历列表 查抄用户输入的backend 信息是否已经存在
                     if backendset[i]['backend'] == __backend_add['backend']:
-                        print("你输入的backend信息已经存在，如需修改请选择 3")
+                        #print("你输入的backend信息已经存在，如需修改请选择 【3】")
+                        backendset[i]['record']['server'] = \
+                            __backend_add['record']['server']
+                        backendset[i]['record']['weight'] = \
+                            __backend_add['record']['weight']
+                        backendset[i]['record']['maxconn'] = \
+                            __backend_add['record']['maxconn']
+                        print("你输入的backend信息已经存在！")
+                        print("对应backend的server信息已修改成功！")
+                        bak_flag=True
+                        exit_flag = True
                         break
                 else:                                                   #信息不存在 插入输入信息
                     backendset.append(__backend_add)
+                    print("backend信息添加成功！")
                     bak_flag = True
                     exit_flag = True
                     break
             else:
-                print("输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+                print("输入的格式有误！请重新输入。注意格式为：\r\n \
+                    args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
         else:
-            print("输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+            print("输入的格式有误！请重新输入。注意格式为：\r\n  \
+                args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
     return backendset,bak_flag
 
 """
@@ -158,12 +174,16 @@ def backend_del(backendset):
             exit_flag=True
         elif '=' in __backend_input:                                    # 判断用户输入是否包含 = 关键字
             __backend_del = eval(__backend_input.split('=')[1])         # 以 = 分割 将=后信息转换为字典格式
-            if __backend_del.get('backend') and __backend_del.get('record', 'server') and __backend_del.get('record', 'weight') and __backend_del.get('record', 'maxconn'):
+            if __backend_del.get('backend') \
+                    and __backend_del.get('record', 'server') \
+                    and __backend_del.get('record', 'weight') \
+                    and __backend_del.get('record', 'maxconn'):
                                                                         # 判断用户输入的信息是否符合要存入的格式
                 for i in range(len(backendset)):                        # 遍历列表 查抄用户输入的backend 信息是否已经存在
                     print(backendset[i])
                     if backendset[i]==__backend_del:
                         backendset.pop(i)
+                        print("backend信息删除成功！")
                         bak_flag = True
                         exit_flag = True
                         break
@@ -172,10 +192,12 @@ def backend_del(backendset):
                     break
             else:
                 print(
-                    "输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+                    "输入的格式有误！请重新输入。注意格式为：\r\n \
+                        args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
         else:
             print(
-                "输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+                "输入的格式有误！请重新输入。注意格式为：\r\n \
+                    args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
     return backendset,bak_flag
 
 """
@@ -191,25 +213,32 @@ def backend_modify(backendset):
             exit_flag=True
         elif '=' in __backend_input:  # 判断用户输入是否包含 = 关键字
             __backend_mod = eval(__backend_input.split('=')[1])  # 以 = 分割 将=后信息转换为字典格式
-            if __backend_mod.get('backend') and __backend_mod.get('record', 'server') and __backend_mod.get('record', 'weight') and __backend_mod.get('record', 'maxconn'):
+            if __backend_mod.get('backend') \
+                    and __backend_mod.get('record', 'server') \
+                    and __backend_mod.get('record', 'weight') \
+                    and __backend_mod.get('record', 'maxconn'):
                 # 判断用户输入的信息是否符合要存入的格式
                 for i in range(len(backendset)):  # 遍历列表 查抄用户输入的backend 信息是否已经存在
                     if backendset[i]['backend'] == __backend_mod['backend']:
                         backendset[i]['record']['server'] = __backend_mod['record']['server']
                         backendset[i]['record']['weight'] = __backend_mod['record']['weight']
                         backendset[i]['record']['maxconn'] = __backend_mod['record']['maxconn']
+                        print("backend信息修改成功！")
                         bak_flag=True
                         exit_flag = True
                         break
                 else:  # 信息不存在 插入输入信息
-                    print("你输入的backend信息不存在，如需添加请选择2")
+                    print("你输入的backend信息不存在，如需添加请选择 【2】")
+                    exit_flag = True
                     break
             else:
                 print(
-                    "输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+                    "输入的格式有误！请重新输入。注意格式为：\r\n \
+                        args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
         else:
             print(
-                "输入的格式有误！请重新输入。注意格式为：\r\n args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
+                "输入的格式有误！请重新输入。注意格式为：\r\n \
+                    args={'backend':'xxx.xxx.xxx','record':{'server':'x.x.x.x','weight':xx,'maxconn':xx}}")
     return backendset,bak_flag
 
 """
@@ -218,13 +247,16 @@ file_save 处理 最终保存文件功能
 
 def file_save(globalset,backendset):
 
-    f=open("2.cfg","w",encoding="utf-8")
+    f=open("haproxy.cfg","w",encoding="utf-8")
     for g in range(len(globalset)):             #遍历公共参数部分 写入文件
         f.write(globalset[g])
 
     for b in range(len(backendset)):            #遍历backend列表部分 写入文件
         backend_info = "backend "+ backendset[b]['backend']
-        server_info = "        server "+ backendset[b]['record']['server']+" weight "+ str(backendset[b]['record']['weight']) + " maxconn "+  str(backendset[b]['record']['maxconn'])
+        server_info = "        server " \
+                      + backendset[b]['record']['server']+" weight " \
+                      + str(backendset[b]['record']['weight']) + " maxconn " \
+                      + str(backendset[b]['record']['maxconn'])
         f.write("\n")
         f.write(backend_info)
         f.write("\n")
@@ -244,11 +276,9 @@ def create_bakfile():
     f2 = open(bak_file, "w", encoding="utf=8")
     for line in f1.readlines():
         f2.write(line)
-    f2.flush()
+    #f2.flush()
     f1.close()
     f2.close()
-
-
 
 """
 入口函数

@@ -24,13 +24,10 @@ frontend oldboy.org
         use_backend www.oldboy.org if www
 
 backend www.oldboy.org
-        server 100.1.7.89,100.1.7.9 weight 20 maxconn 50000
+        server 100.1.7.89,100.1.7.9 weight 20 maxconn 500
 
 backend www.123.com
         server 1.1.1.1,2.2.2.2 weight 20 maxconn 3000
 
 backend www.pipcoo.com
         server 100.1.7.89,100.1.7.9 weight 20 maxconn 500
-
-backend www.pipcoo.com.cn
-        server 100.1.7.89,100.1.7.9 weight 20 maxconn 5000
