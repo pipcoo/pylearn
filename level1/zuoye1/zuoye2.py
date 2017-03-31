@@ -16,11 +16,11 @@
 f=open("menu.txt","r",encoding="utf-8")
 menu=''
 for line in f:
-    menu+=line.strip()
+    menu+=line.strip()          #遍历读取文件 整合成1行
 f.close()
-menu=eval(menu)
+menu=eval(menu)                 #将整合的文件转换为字典格式
 exit_flag=True
-current_menu=[]
+current_menu=[]                 #初始化一个列表存储当前所在目录下的字典，
 
 while exit_flag:
 
@@ -34,11 +34,11 @@ while exit_flag:
         break
 
     if __input=='b':
-        menu=current_menu[-1]
-        current_menu.pop()
+        menu=current_menu[-1]       #如果选择返回上级 则取 当前列表的最后插入的一个元素
+        current_menu.pop()          #赋值后 将最后一个元素从列表移出
     else:
-        current_menu.append(menu)
-        menu=menu[__input]
+        current_menu.append(menu)   #如果进入下一级 将当前一级存入列表
+        menu=menu[__input]          #当前目录 为所选择 key下的字典
 
 
 

@@ -14,8 +14,9 @@
 7、允许查询之前的消费记录
 '''
 
-import time
+import time #引入模块用于购物时间的格式化记录
 
+'''read_of_file 功能负责读取文件 返回一个字典类的结构数据'''
 def read_of_file():
     f=open("account.txt","r",encoding="utf-8")
     menu=''
@@ -24,6 +25,7 @@ def read_of_file():
     f.close()
     return eval(menu)
 
+'''login 处理登录认证'''
 def login(username,password):
     if username in __db[0]:
         if password == __db[0][username]['password']:
@@ -33,19 +35,25 @@ def login(username,password):
     else:
         return False
 
+
+'''first_login_check 验证是否是第一次登录'''
 def first_login_check(username):
     if __db[0][username]['salary'] == '':
         return True
     else:
         return False
 
+
+'''set_user_salary 设置用户的工资金额'''
 def set_user_salary(username,salary):
     __db[0][username]['salary']=salary
 
+'''print_commodity 用来打印库存商品信息'''
 def print_commodity():
     for keys in __db[1]:
         print(keys,__db[1][keys][0],"¥",__db[1][keys][1])
 
+'''处理运行后的数据保存'''
 def save_to_file():
     r={}
     r['account']=__db[0]
@@ -54,9 +62,11 @@ def save_to_file():
     f.write(str(r))
     f.close()
 
+
+'''check_money 处理添加到购物车前 工资是否足够 购买所选商品'''
 def check_money(username,commodity_id):
     expense=__db[1][commodity_id][1]
-    if len(__db[0][username]['shoppingcart']) > 0 :
+    if len(__db[0][username]['shoppingcart']) > 0 : #购物车不为空 则将未结算的物品价格综合也计算进来
         for i in range(len(__db[0][username]['shoppingcart'])):
             expense+=__db[0][username]['shoppingcart'][i][2]
     if __db[0][username]['salary'] > expense:
@@ -64,18 +74,24 @@ def check_money(username,commodity_id):
     else:
         return False
 
+
+'''check_inventory 检查是否有库存 用于用户购买'''
 def check_inventory(commodity_id):
     if __db[1][commodity_id][2] > 0:
         return True
     else:
         return False
 
+
+'''add_commodity 添加用户选择的商品ID到购物车中'''
 def add_commodity(username,commodity_id):
     shoppingcart=__db[0][username]['shoppingcart']
     commodity_info=[commodity_id,__db[1][commodity_id][0],__db[1][commodity_id][1],time.strftime('%Y-%m-%d %H:%M:%S')]
     shoppingcart.append(commodity_info)
     __db[0][username]['shoppingcart']=shoppingcart
 
+
+'''settle_account 用于结算 结算完成后 保存用户数据到文件'''
 def settle_account():
     shoppingcart = __db[0][username]['shoppingcart']
     order= __db[0][username]['order']
@@ -89,6 +105,8 @@ def settle_account():
     save_to_file()
 
 
+
+'''shopping 购买过程'''
 def shopping(username):
     shopping_flag=True
     while shopping_flag:
@@ -113,10 +131,12 @@ def shopping(username):
 
     #return False
 
+
+'''look_shoppingcart 查看购物车功能'''
 def look_shoppingcart(username):
     shoppingcart=__db[0][username]['shoppingcart']
 
-    if len(shoppingcart) > 0 :
+    if len(shoppingcart) > 0 :    #购物车不为空 打印所添加物品
         print("=============================================================================")
         for i in range(len(shoppingcart)):
             print("商品名称:%s \t商品价格:¥%s \t购买时间:%s   " %(shoppingcart[i][1],shoppingcart[i][2],shoppingcart[i][3]))
@@ -126,16 +146,16 @@ def look_shoppingcart(username):
         return True
 
     __input=input("按‘q’退出，按‘c’清空购物车，按‘e’结算")
-    if __input=='q':
+    if __input=='q':            #退出
         return True
-    elif __input == 'e':
+    elif __input == 'e':        #结算
         settle_account()
         return False
-    elif __input=='c':
+    elif __input=='c':          #清空
         __db[0][username]['shoppingcart']=[]
         print('购物车清空成功，赶快重新选购吧~')
 
-
+'''look_historys 打印历史购买记录'''
 def look_historys(username):
     order = __db[0][username]['order']
     if len(order) > 0:
@@ -147,7 +167,7 @@ def look_historys(username):
     else:
         print("您还没有购物记录，赶快去抢购吧。")
 
-
+'''print_this_time_shopping 用于退出时打印本次购买的记录'''
 def print_this_time_shopping(username):
     if len(this_time_shopping) > 0:
         expense=0
@@ -167,10 +187,10 @@ def print_this_time_shopping(username):
         print("欢迎再次光临~")
 
 
-__db=[]
+__db=[]                     #初始化一个数据列表
 f=read_of_file()
-__db.append(f['account'])
-__db.append(f['commodity'])
+__db.append(f['account'])   #将用户数据添加到数据列表
+__db.append(f['commodity']) #将商品数据添加到数据列表
 this_time_shopping=[]
 exit_flag=True
 
