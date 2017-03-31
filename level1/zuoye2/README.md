@@ -13,8 +13,10 @@
 '''
 
 运行 zuoye3.py
-数据存储文件是 account.txt   
+数据存储文件是 account.txt
 account_bak.txt 是方便于查看 存储的结构，该格式是account.txt的初始格式
 完成一次运行之后 保存的信息变为一行。
 
 功能运行程序按照提示操作即可。购物车没有结算的会保存下来，下次登录可以查看结算 ，也可以清空购物车。
+
+博客地址http://www.pipcoo.com

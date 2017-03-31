@@ -8,4 +8,7 @@
 ##### args={'backend':'www.xxx.com','record':{'server':'1.1.1.1','weight':20,'maxconn':3000}}
 
 输入格式不对会有提示  增加时如果 backend 已存在会直接修改
-增 删 改 完成后如信息发生改变 会保存一份备份文件。 
+增 删 改 完成后如信息发生改变 会保存一份备份文件。
+
+
+博客地址http://www.pipcoo.com

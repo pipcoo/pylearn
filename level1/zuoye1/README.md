@@ -28,3 +28,6 @@
 运行zuoye2.py
 菜单数据存储在menu.txt
 
+
+
+博客地址http://www.pipcoo.com
