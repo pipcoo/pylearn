@@ -1,21 +1,22 @@
 
 ------------1
-员工信息表程序，实现增删改查操作：
+
+详细描述参考http://www.cnblogs.com/alex3714/articles/5740985.html
+有以下员工信息表
+当然此表你在文件存储时可以这样表示
+1,Alex Li,22,13651054608,IT,2013-04-01
+现需要对这个员工信息文件，实现增删改查操作
 
 可进行模糊查询，语法至少支持下面3种:
-　　select name,age from staff_table where age > 22
-　　select  * from staff_table where dept = "IT"
-    select  * from staff_table where enroll_date like "2013"
+    select name,age from staff_table where age > 22
+    select * from staff_table where dept = "IT"
+    select * from staff_table where enroll_date like "2013"
 查到的信息，打印后，最后面还要显示查到的条数
 可创建新员工纪录，以phone做唯一键，staff_id需自增
 可删除指定员工信息纪录，输入员工id，即可删除
 可修改员工信息，语法如下:
-　　UPDATE staff_table SET dept="Market" WHERE where dept = "IT"
- 注意：以上需求，要充分使用函数，请尽你的最大限度来减少重复代码
-
-详细描述参考http://www.cnblogs.com/alex3714/articles/5740985.html
-d
-
+    UPDATE staff_table SET dept="Market" WHERE where dept = "IT"
+ 注意：以上需求，要充分使用函数，请尽你的最大限度来减少重复代码！
 
 
 ----------2
@@ -31,3 +32,16 @@ ATM：模拟实现一个ATM + 购物商城程序
 ATM记录操作日志
 提供管理接口，包括添加账户、用户额度，冻结账户等。。。
 用户认证用装饰器
+
+
+----------3
+
+模拟计算器开发：
+实现加减乘除及拓号优先级解析
+用户输入 1 - 2 * ( (60-30 +(-40/5) * (9-2*5/3 + 7 /3*99/4*2998 +10 * 568/14 )) - (-4*3)/ (16-3*2) )
+2356945           ----py2
+2776672.6952380957----py3
+等类似公式后，必须自己解析里面的
+(),+,-,*,/符号和公式(不能调用eval等类似功能偷懒实现)，
+运算后得出结果，结果必须与真实的计算器所得出的结果一致
+1 - 2 * ( (30 +(-8) * (9-2*5/3 + 7 /3*99/4*2998 +10 * 568/14 )) - (-12)/ 10 )
