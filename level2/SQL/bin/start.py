@@ -13,10 +13,12 @@
 """
 
 import os,sys
-from core import main
+
 
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 sys.path.append(BASE)
+
+from core import main
 
 main.sqlplus()
