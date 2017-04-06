@@ -12,8 +12,12 @@
 @time: 2017/4/6 0:11
 """
 
+from . import datafile_manager
+
+
 def _show(command):
-    print('this is show')
+    if command == 'show tables;':
+        datafile_manager.show_tables()
 
 def _select(command):
     print('this is select')
@@ -28,5 +32,5 @@ def _drop(command):
     print('this is drop')
 
 def _create(command):
-    print('this is create s%'%(command))
+    print('this is create %s'%(command))
 

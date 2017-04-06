@@ -23,18 +23,20 @@ def sqlplus():
     exit_flag = False
     while not exit_flag:
         sql_input=input('SQL>')
-        sql_command = sql_input.split()
+        sql_command = sql_input.split(' ')
         if sql_command[0] == 'exit':
             exit_flag=True
         elif sql_command[0] == 'show':
-            command_exec._show
+            command_exec._show(sql_input)
         elif sql_command[0] == 'create':
-            command_exec._create
+            command_exec._create(sql_input)
         elif sql_command[0] == 'insert':
-            command_exec._insert
+            command_exec._insert(sql_input)
         elif sql_command[0] == 'select':
-            command_exec._select
+            command_exec._select(sql_input)
         elif sql_command[0] == 'delete':
-            command_exec._delete
+            command_exec._delete(sql_input)
         elif sql_command[0] == 'drop':
-            command_exec._drop
+            command_exec._drop(sql_input)
+        else:
+            print('input error')
