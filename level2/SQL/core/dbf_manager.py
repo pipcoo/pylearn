@@ -8,16 +8,16 @@
 @contact: pipcoo@pipcoo.com
 @site: http://www.pipcoo.com
 @software: PyCharm
-@file: start.py
-@time: 2017/4/5 23:38
+@file: dbf_manager.py
+@time: 2017/4/9 11:24
 """
 
-import os,sys
+import os,sys,json
 
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-sys.path.append(BASE)
+def dbf_load():
+    f = open (BASE+'/data/db.dbf','r',encoding='utf-8')
+    db = json.load(f)
+    return db
 
-from core import main
-
-main.sqlplus()

@@ -1,1 +1,0 @@
-[{'staff_id':['int','True','True']},{'name':['str','True','False']},{'age':['int','True','False']},{'phone':['str','True','False']},{'dept':['str','True','False']},{'enroll_date':['str','True','False']}]
