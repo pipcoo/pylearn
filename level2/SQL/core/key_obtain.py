@@ -26,10 +26,9 @@ def get_colname(command):
     tablename = command_list[command_list.index('from') + 1]
     if cols == '*':
         db = dbf_manager.dbf_load()
-        tableinfo= db['tablelist'][tablename]
-        for key in tableinfo:
-            colsname.append(key.keys())
-
+        for dict in db['tablelist'][tablename]:
+            for k in dict:
+                colsname.append(k)
     else:
         colsname = cols.split(',')
 
@@ -46,6 +45,5 @@ def check_where_key():
 
 
 
-command = 'select * from emp'
+command = 'select staff_id，name from emp'
 print(get_colname(command))
-
