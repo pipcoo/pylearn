@@ -12,7 +12,15 @@
 @time: 2017/4/9 22:56
 """
 
-import dbf_manager
+from . import dbf_manager
+
+def check_tabname(tabname):
+    db = dbf_manager.dbf_load()
+    if tabname in db[tablelist]:
+        return True
+    else:
+        return False
+
 
 def get_tablename(command):
     command_list = command.split(' ')
@@ -20,6 +28,11 @@ def get_tablename(command):
     return tablename
 
 def get_colname(command):
+    """
+    获取需要查询的列
+    :param command: 
+    :return: 
+    """
     colsname=[]
     command_list = command.split(' ')
     cols = command_list[command_list.index('from') - 1]
@@ -44,6 +57,3 @@ def check_where_key():
     pass
 
 
-
-command = 'select staff_id，name from emp'
-print(get_colname(command))

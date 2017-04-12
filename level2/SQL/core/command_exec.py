@@ -12,7 +12,8 @@
 @time: 2017/4/6 0:11
 """
 import re
-from . import dbf_manager
+#import dbf_manager
+from . import key_obtain
 
 def _show(command):
     if re.match('show\s+tables\Z', command):
@@ -23,7 +24,7 @@ def _show(command):
 def _select(command):
 #select * from emp & select xx,xx from emp
     if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command):
-        print('ok')
+        print(key_obtain.get_colname(command))
     else:
         print('语法错误！~')
 
