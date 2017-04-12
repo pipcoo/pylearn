@@ -8,16 +8,20 @@
 @contact: pipcoo@pipcoo.com
 @site: http://www.pipcoo.com
 @software: PyCharm
-@file: sql_exec.py
-@time: 2017/4/6 0:11
+@file: command_handle.py
+@time: 2017/4/12 22:56
 """
+
 import re
 #import dbf_manager
-from . import command_handle
+from . import dbfile_handle
+
 
 def _show(command):
-    if re.match('show\s+tables\Z', command):
-        print('ok')
+    if re.match('show\s+databases\Z', command):
+        pass  # todo
+    elif re.match('show\s+tables\Z', command):
+        pass  # todo
     else:
         print('语法错误！~')
 
@@ -32,17 +36,17 @@ def _insert(command):
 #insert into emp values (xxxxxx.xxx.xx)
     if re.match('insert\s+into+'
                 '\s+.+\s+\(.*\)',command):
-        print(ok)
+        pass  # todo
     else:
         print('语法错误！~')
 
 def _update(command):
 #update emp set sss=sss where xxx
-    print('this is update')
+    pass  # todo
 
 def _drop(command):
 #drop table emp;
-    print('this is drop')
+    pass  # todo
 
 def _create(command):
 # create table xxx (id int ,name str)
@@ -50,3 +54,12 @@ def _create(command):
         print(ok)
     else:
         print('语法错误！~')
+
+def _use(command):
+#drop table emp;
+    pass  # todo
+
+
+def _delete(command):
+#drop table emp;
+    pass  # todo
