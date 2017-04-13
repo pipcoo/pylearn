@@ -322,6 +322,6 @@ def drop_databases(database_name):
 # insert_table('emp','staff_table',{"staff_id": 1,"name": "Alex Li1","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
 # insert_table('emp','staff_table',{"staff_id": 2,"name": "Alex Li2","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
 # insert_table('emp','staff_table',{"staff_id": 3,"name": "Alex Li3","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
-print (update_table('emp','staff_table',('phone','18811112222')))
+print (update_table('emp','staff_table',('phone','1561515615'),[['dept','like','I']]))
 print(select_table('emp','staff_table'))
 #print(delete_table('emp','staff_table'))
