@@ -120,6 +120,7 @@ def create_table(current_database,create_command):
             print('表%s已存在！'%tabname)
         else:
             write_tbf(current_database,tabname,table_create_template)
+            print('表%s创建成功！' % tabname)
 
     else:
         print('语法错误！')
@@ -169,25 +170,116 @@ def insert_table(current_database,tabname,values):
                     print('插入数据格式不匹配!')
     else:
         print('要插入的值不够！')
-    print(coldata)
+    #print(coldata)
     if check_result:
-        tabdata['table_data'].append(coldata)
+        tabdata['table_data'].append([len(tabdata['table_data']),coldata])
         write_tbf(current_database, tabname, tabdata)
 
 
-def delete_table(current_database,tabname,where_key):
-    pass #todo
+def delete_table(current_database,tabname,where_key=''):
+    delete_count = 0
+    delete_list = select_table(current_database,tabname,where_key)[1]
+    tabdata = read_tbf(current_database, tabname)
+    data = tabdata['table_data']
+    keep_data =[]
+    for row in data:
+        if row[0] in delete_list:
+            delete_count+=1
+        else:
+            keep_data.append(row)
+    tabdata['table_data'] = keep_data
+    if delete_count > 0 :
+        write_tbf(current_database, tabname, tabdata)
+        return delete_count
+    else:
+        return delete_count
 
-def update_table(current_database):
-    pass #todo
+def update_table(current_database,tabname,set_value,where_key=''):
+    update_list = select_table(current_database, tabname, where_key)[1]
+    tabdata = read_tbf(current_database, tabname)
+    columns = tabdata['columns']
+    data = tabdata['table_data']
+    set_value_index = columns_handle(columns,set_value[0])[1]
+    updated_count = 0
+    result_date =[]
+    for row in data:
+        if row[0] in update_list:
+            row[1][set_value_index]=set_value[1]
+            result_date.append(row)
+            updated_count+=1
+        else:
+            result_date.append(row)
+    tabdata['table_data'] = result_date
+    if updated_count > 0 :
+        write_tbf(current_database, tabname, tabdata)
+        return updated_count
+    else:
+        return updated_count
 
-def select_table(current_database,tabname,where_key):
+
+def columns_handle(columns,col_name):
+    for dict in columns:
+        for k in dict:
+            if k == col_name:
+                return dict[k],columns.index(dict)
+
+
+def row_handle(data,col_index,_judge,judge_key):
+    result_data = []
+    result_index = []
+    for row in data:
+        if _judge == '>':
+            if row[1][col_index] > judge_key:
+                result_data.append(row)
+                result_index.append(row[0])
+        elif _judge == '=':
+            if row[1][col_index] == judge_key:
+                result_data.append(row)
+                result_index.append(row[0])
+        elif _judge == '<':
+            if row[1][col_index] < judge_key:
+                result_data.append(row)
+                result_index.append(row[0])
+        elif _judge == 'like':
+            if re.search(judge_key,row[1][col_index]):
+                result_data.append(row)
+                result_index.append(row[0])
+        else:
+            print('条件输入错误！')
+            break
+    else:
+        return result_data,result_index
+
+def key_handle(data,where_key_index,surplus_row_index=[]):
+
+    if len(where_key_index) > 0:
+        current_handle = where_key_index.pop()
+        surplus = row_handle(data,current_handle[0],current_handle[1],current_handle[2])
+        surplus_row = surplus[0]
+        surplus_row_index=surplus[1]
+        return key_handle(surplus_row,where_key_index,surplus_row_index)
+    else:
+        return data,surplus_row_index
+
+def select_table(current_database,tabname,where_key=''):
     tabdata = read_tbf(current_database, tabname)
     data = tabdata['table_data']
     columns = tabdata['columns']
-    for i in 
+    where_key_index=[]
+    result_data_index=[]
+    if where_key != '':
+        for i in where_key:
+            i[0]=columns_handle(columns,i[0])[1]
+            where_key_index.append(i)
+        result = key_handle(data,where_key_index)
+        result_data = result[0]
+        result_data_index = result[1]
+        return result_data,result_data_index
+    else:
+        for row in data:
+            result_data_index.append(row[0])
 
-
+        return data,result_data_index
 
 def drop_table(current_database,tabname):
     """
@@ -198,7 +290,7 @@ def drop_table(current_database,tabname):
     """
     if os.path.exists(io_path(current_database,tabname)):
         os.remove(io_path(current_database,tabname))
-        print("%s已删除"%tabname)
+        print("表%s已删除"%tabname)
     else:
         print("表不存在！~")
 
@@ -224,5 +316,12 @@ def drop_databases(database_name):
 #
 # drop_databases('emp2')
 
-
-insert_table('emp','staff_table',{"staff_id": 1,"name": "lala","age": 12,"phone": "13333333333","dept": "it","enroll_date": "2013-03-01"})
+# a= [{"staff_id": "int"}, {"name": "str"}, {"age": "int"}, {"phone": "str"}, {"dept": "str"}, {"enroll_date": "str"}]
+# print(columns_handle(a,'phone'))
+#
+# insert_table('emp','staff_table',{"staff_id": 1,"name": "Alex Li1","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+# insert_table('emp','staff_table',{"staff_id": 2,"name": "Alex Li2","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+# insert_table('emp','staff_table',{"staff_id": 3,"name": "Alex Li3","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+print (update_table('emp','staff_table',('phone','18811112222')))
+print(select_table('emp','staff_table'))
+#print(delete_table('emp','staff_table'))
