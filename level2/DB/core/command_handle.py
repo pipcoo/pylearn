@@ -19,9 +19,9 @@ from . import dbfile_handle
 
 def _show(command):
     if re.match('show\s+databases\Z', command):
-        pass  # todo
+        dbfile_handle.get_databases()
     elif re.match('show\s+tables\Z', command):
-        pass  # todo
+        dbfile_handle.get_tables()
     else:
         print('语法错误！~')
 

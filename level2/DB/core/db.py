@@ -52,3 +52,7 @@ def sqlplus():
                 print('输入错误！~')
         else:
             print('输入错误！~')
+
+
+def sqlapi(command):
+    pass #todo

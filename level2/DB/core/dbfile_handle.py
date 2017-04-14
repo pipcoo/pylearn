@@ -149,6 +149,7 @@ def check_types(check_data,_type):
             return False
 
 
+
 def insert_table(current_database,tabname,values):
     """
     插入表
@@ -306,6 +307,12 @@ def drop_databases(database_name):
         print("数据库%s已删除！~"%database_name)
     else:
         print("数据库%s不存在！~" %database_name)
+
+def print_result(p_list):
+
+    print
+    for i in p_list:
+
 
 #drop_table('emp','staff_table')
 #create_table('emp','create table staff_table (staff_id int not null auto_increment,name str,age int ,phone str ,dept str,enroll_date str )')
