@@ -170,7 +170,7 @@ def insert_table(current_database,tabname,values):
                 else:
                     print('插入数据格式不匹配!')
     else:
-        print('要插入的值不够！')
+        print('要插入值的数量不符！')
     #print(coldata)
     if check_result:
         tabdata['table_data'].append([len(tabdata['table_data']),coldata])
@@ -308,10 +308,30 @@ def drop_databases(database_name):
     else:
         print("数据库%s不存在！~" %database_name)
 
-def print_result(p_list):
+def print_row(row_list,dis_index):
 
-    print
-    for i in p_list:
+    dis_row = ''
+    for i in row_list:
+        if row_list.index(i) in dis_index:
+            dis_row += '| %s '%i
+    else:
+        dis_row += '|'
+    print ('-'*len(dis_row))
+    print (dis_row)
+    return len(dis_row)
+
+def print_result(current_database,tabname,display_list,display_col):
+    tabdata = read_tbf(current_database, tabname)
+    columns = tabdata['columns']
+    display_idx = []
+    for col_name in display_col:
+        display_idx.append(columns_handle(columns,col_name)[1])
+
+    for i in display_list:
+        hnum=print_row(i[1],display_idx)
+    else:
+        print('_'*hnum)
+
 
 
 #drop_table('emp','staff_table')
@@ -323,12 +343,20 @@ def print_result(p_list):
 #
 # drop_databases('emp2')
 
+drop_table('emp','staff_table')
+create_table('emp','create table staff_table (staff_id int not null auto_increment,name str,age int ,phone str ,dept str,enroll_date str )')
+
 # a= [{"staff_id": "int"}, {"name": "str"}, {"age": "int"}, {"phone": "str"}, {"dept": "str"}, {"enroll_date": "str"}]
 # print(columns_handle(a,'phone'))
 #
-# insert_table('emp','staff_table',{"staff_id": 1,"name": "Alex Li1","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
-# insert_table('emp','staff_table',{"staff_id": 2,"name": "Alex Li2","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
-# insert_table('emp','staff_table',{"staff_id": 3,"name": "Alex Li3","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
-print (update_table('emp','staff_table',('phone','1561515615'),[['dept','like','I']]))
-print(select_table('emp','staff_table'))
+insert_table('emp','staff_table',{"staff_id": 1,"name": "Alex Li4","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+insert_table('emp','staff_table',{"staff_id": 2,"name": "Alex Li5","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+insert_table('emp','staff_table',{"staff_id": 3,"name": "Alex Li6","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+insert_table('emp','staff_table',{"staff_id": 4,"name": "Alex Li7","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+insert_table('emp','staff_table',{"staff_id": 5,"name": "Alex Li8","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+insert_table('emp','staff_table',{"staff_id": 6,"name": "Alex Li9","age": 22,"phone": "13651054608","dept": "IT","enroll_date": "2013-04-01"})
+#print (update_table('emp','staff_table',('phone','1561515615'),[['dept','like','I']]))
+#print(select_table('emp','staff_table'))
 #print(delete_table('emp','staff_table'))
+#print(select_table('emp','staff_table'))
+#print_result('emp','staff_table',select_table('emp','staff_table')[0],['staff_id','name'])

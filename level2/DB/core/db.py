@@ -28,6 +28,7 @@ def sqlplus():
     :return: 
     """
     exit_flag = False
+    current_database = ''
     while not exit_flag:
         sql_input=input('SQL>')
         if len(sql_input)>1:
