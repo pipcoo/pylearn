@@ -12,7 +12,7 @@
 @time: 2017/4/12 23:02
 """
 
-import os,sys,re,json,types
+import os,re,json
 
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,17 +30,22 @@ def io_path(current_database='',tabname=''):
     elif current_database == '' and tabname == '':
         return BASE+'/data/'
 
-def get_databases():
+def get_databases(command=''):
     """
     获取已存在的数据库文件夹
     :return: 
     """
-    databases = []
-    databases_dir = os.listdir(io_path())
-    for i in databases_dir:
-        if os.path.isdir(io_path()+i):
-            databases.append(i)
-    return databases
+    if command == '':
+
+        databases = []
+        databases_dir = os.listdir(io_path())
+        for i in databases_dir:
+            if os.path.isdir(io_path()+i):
+                databases.append(i)
+        return databases
+    else:
+        command_list = command.split(' ')
+        return  command_list[1]
 
 def get_tables(current_database):
     """
@@ -224,6 +229,27 @@ def columns_handle(columns,col_name):
             if k == col_name:
                 return dict[k],columns.index(dict)
 
+def check_colname(current_database,tabname,check_colname):
+    """
+    检查列名是否存在 
+    :param current_database: 
+    :param tabname: 
+    :param check_colname: 
+    :return: 存在返回 True 列类型 列索引 不存在返回False
+    """
+    tabdata = read_tbf(current_database, tabname)
+    columns = tabdata['columns']
+    columns_all = []
+    for dict in columns:
+        for k in dict:
+            columns_all.append(k)
+    if check_colname in columns_all:
+        columns_type = columns_handle(columns,check_colname)[0]
+        colunms_index = columns_handle(columns,check_colname)[1]
+        return True,columns_type,colunms_index
+    else:
+        return False, '', ''
+
 
 def row_handle(data,col_index,_judge,judge_key):
     result_data = []
@@ -263,6 +289,13 @@ def key_handle(data,where_key_index,surplus_row_index=[]):
         return data,surplus_row_index
 
 def select_table(current_database,tabname,where_key=''):
+    """
+    查询表 没有where条件则全部输出 有where条件进行筛选
+    :param current_database: 当前数据库 名
+    :param tabname: 当前表名
+    :param where_key: where条件 列表模式 eg：[['id','>',1],['name','like','wang']]
+    :return: 返回数据 和数据的行号
+    """
     tabdata = read_tbf(current_database, tabname)
     data = tabdata['table_data']
     columns = tabdata['columns']
@@ -343,6 +376,8 @@ def print_result(current_database,tabname,display_list,display_col):
 #
 # drop_databases('emp2')
 
+
+''' 
 drop_table('emp','staff_table')
 create_table('emp','create table staff_table (staff_id int not null auto_increment,name str,age int ,phone str ,dept str,enroll_date str )')
 
@@ -359,4 +394,7 @@ insert_table('emp','staff_table',{"staff_id": 6,"name": "Alex Li9","age": 22,"ph
 #print(select_table('emp','staff_table'))
 #print(delete_table('emp','staff_table'))
 #print(select_table('emp','staff_table'))
-#print_result('emp','staff_table',select_table('emp','staff_table')[0],['staff_id','name'])
+print_result('emp','staff_table',select_table('emp','staff_table',[['staff_id','>',5]])[0],['staff_id','name'])
+'''
+
+#print (check_colname('emp','staff_table','phone'))

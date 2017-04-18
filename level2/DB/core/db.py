@@ -38,17 +38,17 @@ def sqlplus():
             elif sql_command == 'show':
                 command_handle._show(sql_input)
             elif sql_command == 'use':
-                command_handle._use(sql_input)
+                current_database = command_handle._use(sql_input)
             elif sql_command == 'create':
                 command_handle._create(sql_input)
             elif sql_command == 'insert':
-                command_handle._insert(sql_input)
+                command_handle._insert(sql_input,current_database)
             elif sql_command == 'select':
-                command_handle._select(sql_input)
+                command_handle._select(sql_input,current_database)
             elif sql_command == 'delete':
-                command_handle._delete(sql_input)
+                command_handle._delete(sql_input,current_database)
             elif sql_command == 'drop':
-                command_handle._drop(sql_input)
+                command_handle._drop(sql_input,current_database)
             else:
                 print('输入错误！~')
         else:
