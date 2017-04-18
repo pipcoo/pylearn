@@ -36,11 +36,12 @@ def sqlplus():
             if sql_input == 'exit':
                 exit_flag=True
             elif sql_command == 'show':
-                command_handle._show(sql_input)
+                command_handle._show(sql_input,current_database)
             elif sql_command == 'use':
                 current_database = command_handle._use(sql_input)
+                print('切换到数据库%s'%(current_database))
             elif sql_command == 'create':
-                command_handle._create(sql_input)
+                command_handle._create(sql_input,current_database)
             elif sql_command == 'insert':
                 command_handle._insert(sql_input,current_database)
             elif sql_command == 'select':

@@ -30,22 +30,19 @@ def io_path(current_database='',tabname=''):
     elif current_database == '' and tabname == '':
         return BASE+'/data/'
 
-def get_databases(command=''):
+def get_databases():
     """
     获取已存在的数据库文件夹
     :return: 
     """
-    if command == '':
 
-        databases = []
-        databases_dir = os.listdir(io_path())
-        for i in databases_dir:
-            if os.path.isdir(io_path()+i):
-                databases.append(i)
-        return databases
-    else:
-        command_list = command.split(' ')
-        return  command_list[1]
+    databases = []
+    databases_dir = os.listdir(io_path())
+    for i in databases_dir:
+        if os.path.isdir(io_path()+i):
+            databases.append(i)
+    return databases
+
 
 def get_tables(current_database):
     """

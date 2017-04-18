@@ -18,12 +18,15 @@ from . import dbfile_handle,key_handle
 
 
 def _show(command,current_database=''):
+
     if re.match('show\s+databases\Z', command):
-        dbfile_handle.get_databases(command)
+
+        print(dbfile_handle.get_databases())
+
     elif re.match('show\s+tables\Z', command):
         if current_database != '':
 
-            dbfile_handle.get_tables(current_database)
+            print(dbfile_handle.get_tables(current_database))
         else:
             print('请选择当前数据库~')
     else:
@@ -66,21 +69,31 @@ def _drop(command,current_database=''):
 
 def _create(command,current_database=''):
 # create table xxx (id int ,name str)
-    if re.match('create\s+table\s+.+\s+\(.*\)',command):
-        print(ok)
+    if re.match('create\s+table\s+.+\s+\(.*\)',command) and current_database != '':
+        tabname =command.replace('   ',' ').replace('  ',' ').split(' ')[2]
+        dbfile_handle.create_table(current_database,command)
+    elif re.match('create\s+table\s+.+\s+\(.*\)',command) and current_database == '':
+        print('请选择数据库')
+    elif re.match('create\s+database\s+.+',command):
+        database_name = command.replace(' ','').split('database')[1]
+        dbfile_handle.create_database(database_name)
     else:
         print('语法错误！~')
 
+
 def _use(command):
 
-    if re.match('use\s+\w+)',command):
-        current_database  = dbfile_handle.get_databases(command)
+    if re.match('use\s+\w+',command):
+        current_database  = command.replace('  ',' ').split(' ')[1]
+
         if current_database in dbfile_handle.get_databases():
             return current_database
         else:
             print ('您输入的数据库不存在！')
+            return ''
     else:
         print('语法错误！~')
+        return ''
 
 
 def _delete(command,current_database=''):
