@@ -34,13 +34,26 @@ def _show(command,current_database=''):
 
 def _select(command,current_database=''):
 #select * from emp & select xx,xx from emp
-    if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command):
+    if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command) and 'where' not in command:
+        if current_database != '':
+            tabname = key_handle.get_tablename(command)
+            if tabname in dbfile_handle.get_tables(current_database):
+                dbfile_handle.print_result(current_database, tabname, \
+                             dbfile_handle.select_table(current_database, tabname)[0], \
+                             key_handle.get_colname(current_database, tabname,command))
+
+            else:
+                print('表%s不存在'%(tabname))
+            print(key_handle.get_colname(command))
+        else:
+            print('请选择当前数据库~')
+    elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
         if current_database != '':
             tabname = key_handle.get_tablename(command)
             if tabname in dbfile_handle.get_tables(current_database):
                 dbfile_handle.print_result(current_database, tabname, \
                              dbfile_handle.select_table(current_database, tabname,key_handle.get_where_key(current_database, tabname,command))[0],
-                             key_handle.get_colname(command))
+                             key_handle.get_colname(current_database, tabname,command))
 
             else:
                 print('表%s不存在'%(tabname))
@@ -99,3 +112,6 @@ def _use(command):
 def _delete(command,current_database=''):
 #drop table emp;
     pass  # todo
+
+
+dbfile_handle.print_result('emp', 'staff_table', dbfile_handle.select_table('emp', 'staff_table')[0], key_handle.get_colname('emp', 'staff_table','select * from staff_table'))

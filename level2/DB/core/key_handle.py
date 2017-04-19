@@ -14,6 +14,7 @@
 
 from . import dbfile_handle
 
+
 def check_tabname(tabname):
     db = dbf_manager.dbf_load()
     if tabname in db[tablelist]:
@@ -27,7 +28,7 @@ def get_tablename(command):
     tablename = command_list[command_list.index('from') + 1]
     return tablename
 
-def get_colname(command):
+def get_colname(current_database,tabname,command):
     """
     获取需要查询的列
     :param command: 
@@ -38,14 +39,17 @@ def get_colname(command):
     cols = command_list[command_list.index('from') - 1]
     tablename = command_list[command_list.index('from') + 1]
     if cols == '*':
-        db = dbf_manager.dbf_load()
-        for dict in db['tablelist'][tablename]:
+        tabdata = dbfile_handle.read_tbf(current_database, tabname)
+        columns = tabdata['columns']
+        for dict in columns:
             for k in dict:
                 colsname.append(k)
     else:
         colsname = cols.split(',')
 
     return colsname
+
+#print(get_colname('emp','staff_table','select * from staff_table'))
 
 def judge_key_split(current_database,tabname,in_wkey,judge_key):
     """
