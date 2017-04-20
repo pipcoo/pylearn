@@ -44,7 +44,7 @@ def _select(command,current_database=''):
 
             else:
                 print('表%s不存在'%(tabname))
-            print(key_handle.get_colname(command))
+            #print(key_handle.get_colname(current_database, tabname,command))
         else:
             print('请选择当前数据库~')
     elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
@@ -57,7 +57,7 @@ def _select(command,current_database=''):
 
             else:
                 print('表%s不存在'%(tabname))
-            print(key_handle.get_colname(command))
+            #print(key_handle.get_colname(current_database, tabname,command))
         else:
             print('请选择当前数据库~')
 
@@ -114,4 +114,4 @@ def _delete(command,current_database=''):
     pass  # todo
 
 
-dbfile_handle.print_result('emp', 'staff_table', dbfile_handle.select_table('emp', 'staff_table')[0], key_handle.get_colname('emp', 'staff_table','select * from staff_table'))
+#dbfile_handle.print_result('emp', 'staff_table', dbfile_handle.select_table('emp', 'staff_table')[0], key_handle.get_colname('emp', 'staff_table','select * from staff_table'))

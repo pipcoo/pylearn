@@ -264,6 +264,14 @@ def row_handle(data,col_index,_judge,judge_key):
             if row[1][col_index] < judge_key:
                 result_data.append(row)
                 result_index.append(row[0])
+        elif _judge == '<=':
+            if row[1][col_index] <= judge_key:
+                result_data.append(row)
+                result_index.append(row[0])
+        elif _judge == '>=':
+            if row[1][col_index] >= judge_key:
+                result_data.append(row)
+                result_index.append(row[0])
         elif _judge == 'like':
             if re.search(judge_key,row[1][col_index]):
                 result_data.append(row)
@@ -354,14 +362,23 @@ def print_result(current_database,tabname,display_list,display_col):
     tabdata = read_tbf(current_database, tabname)
     columns = tabdata['columns']
     display_idx = []
+    display_title = ''
     for col_name in display_col:
         display_idx.append(columns_handle(columns,col_name)[1])
 
-    for i in display_list:
-        hnum=print_row(i[1],display_idx)
-    else:
-        print('_'*hnum)
+    if len(display_list) > 0:
+        for d in display_col:
+            display_title += '| %s ' % d
+        else:
+            display_title += '|'
+        print('-' * len(display_title))
+        print(display_title)
 
+        for i in display_list:
+            hnum=print_row(i[1],display_idx)
+        else:
+            print('-'*hnum)
+    print('%d row selected'%(len(display_list)))
 
 
 #drop_table('emp','staff_table')
