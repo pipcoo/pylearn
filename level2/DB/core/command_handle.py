@@ -66,8 +66,7 @@ def _select(command,current_database=''):
 
 def _insert(command,current_database=''):
 #insert into emp values (xxxxxx.xxx.xx)
-    if re.match('insert\s+into+'
-                '\s+.+\s+\(.*\)',command):
+    if re.match('insert\s+into+\s+\w+\s+values\s+\(.*\)',command):
         pass  # todo
     else:
         print('语法错误！~')
