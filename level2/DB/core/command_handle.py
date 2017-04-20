@@ -17,15 +17,26 @@ import re
 from . import dbfile_handle,key_handle
 
 
+
+def check_dbuse_tabname(current_database,command_key,command):
+
+    tabname = key_handle.get_tablename(command_key, command)
+    if current_database == '':
+        print('请选择当前数据库~')
+        return ''
+    elif current_database != '' and tabname not in dbfile_handle.get_tables(current_database):
+        print('表%s不存在' % (tabname))
+        return ''
+    else:
+        return tabname
+
 def _show(command,current_database=''):
 
     if re.match('show\s+databases\Z', command):
-
         print(dbfile_handle.get_databases())
 
     elif re.match('show\s+tables\Z', command):
         if current_database != '':
-
             print(dbfile_handle.get_tables(current_database))
         else:
             print('请选择当前数据库~')
@@ -33,51 +44,55 @@ def _show(command,current_database=''):
         print('语法错误！~')
 
 def _select(command,current_database=''):
-#select * from emp & select xx,xx from emp
-    if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command) and 'where' not in command:
-        if current_database != '':
-            tabname = key_handle.get_tablename(command)
-            if tabname in dbfile_handle.get_tables(current_database):
-                dbfile_handle.print_result(current_database, tabname, \
+
+    tabname = check_dbuse_tabname(current_database,'select',command)
+    if tabname != '':
+        if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command) and 'where' not in command:
+            dbfile_handle.print_result(current_database, tabname, \
                              dbfile_handle.select_table(current_database, tabname)[0], \
                              key_handle.get_colname(current_database, tabname,command))
 
-            else:
-                print('表%s不存在'%(tabname))
-            #print(key_handle.get_colname(current_database, tabname,command))
-        else:
-            print('请选择当前数据库~')
-    elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
-        if current_database != '':
-            tabname = key_handle.get_tablename(command)
-            if tabname in dbfile_handle.get_tables(current_database):
-                dbfile_handle.print_result(current_database, tabname, \
-                             dbfile_handle.select_table(current_database, tabname,key_handle.get_where_key(current_database, tabname,command))[0],
+        elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
+            dbfile_handle.print_result(current_database, tabname, \
+                             dbfile_handle.select_table(current_database, tabname, \
+                             key_handle.get_where_key(current_database, tabname,command))[0], \
                              key_handle.get_colname(current_database, tabname,command))
-
-            else:
-                print('表%s不存在'%(tabname))
-            #print(key_handle.get_colname(current_database, tabname,command))
         else:
-            print('请选择当前数据库~')
+            print('语法错误！~')
 
-    else:
-        print('语法错误！~')
+def _insert(command,current_database):
 
-def _insert(command,current_database=''):
-#insert into emp values (xxxxxx.xxx.xx)
-    if re.match('insert\s+into+\s+\w+\s+values\s+\(.*\)',command):
-        pass  # todo
-    else:
-        print('语法错误！~')
+    tabname = check_dbuse_tabname(current_database, 'insert', command)
+    if tabname != '':
+        if re.match('insert\s+into+\s+\w+\s+values\s+\(.*\)',command):
+            pass  # todo
+        elif re.match('insert\s+into+\s+\w+\s+\(.*\)values\s+\(.*\)',command):
+            pass  # todo
+        else:
+            print('语法错误！~')
+
 
 def _update(command,current_database=''):
-#update emp set sss=sss where xxx
-    pass  # todo
+
+    tabname = check_dbuse_tabname(current_database, 'update', command)
+    if tabname != '':
+        if re.match('update\s+\w+\s+set+\s+values\s+\(.*\)',command):
+            pass  # todoo
+        else:
+            print('语法错误！~')
 
 def _drop(command,current_database=''):
-#drop table emp;
-    pass  # todo
+
+    tabname = check_dbuse_tabname(current_database, 'drop', command)
+    if tabname != '':
+        pass
+
+def _delete(command,current_database=''):
+
+    tabname = check_dbuse_tabname(current_database, 'delete', command)
+    if tabname != '':
+        pass
+
 
 def _create(command,current_database=''):
 # create table xxx (id int ,name str)
@@ -108,9 +123,6 @@ def _use(command):
         return ''
 
 
-def _delete(command,current_database=''):
-#drop table emp;
-    pass  # todo
 
 
 #dbfile_handle.print_result('emp', 'staff_table', dbfile_handle.select_table('emp', 'staff_table')[0], key_handle.get_colname('emp', 'staff_table','select * from staff_table'))

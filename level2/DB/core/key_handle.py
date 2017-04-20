@@ -23,9 +23,16 @@ def check_tabname(tabname):
         return False
 
 
-def get_tablename(command):
+def get_tablename(command_key,command):
     command_list = command.split(' ')
-    tablename = command_list[command_list.index('from') + 1]
+    if command_key == 'select':
+        tablename = command_list[command_list.index('from') + 1]
+    elif command_key == 'insert':
+        tablename = command_list[command_list.index('into') + 1]
+    elif command_key == 'update':
+        tablename = command_list[command_list.index('update') + 1]
+    elif command_key == 'delete':
+        tablename = command_list[command_list.index('from') + 1]
     return tablename
 
 def get_colname(current_database,tabname,command):

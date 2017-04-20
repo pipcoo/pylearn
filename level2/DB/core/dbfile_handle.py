@@ -138,6 +138,13 @@ def write_tbf(current_database,tabname,tabdata):
     f.write(json.dumps(tabdata))
     f.close()
 
+
+
+
+def make_insert_command(current_database,tabname,):
+    pass
+
+
 def check_types(check_data,_type):
     if _type ==  'int':
         if isinstance(check_data,int):
