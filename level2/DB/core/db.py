@@ -39,11 +39,13 @@ def sqlplus():
                 command_handle._show(sql_input,current_database)
             elif sql_command == 'use':
                 current_database = command_handle._use(sql_input)
-                print('切换到数据库%s'%(current_database))
+                print('切换到数据库 %s'%(current_database))
             elif sql_command == 'create':
                 command_handle._create(sql_input,current_database)
             elif sql_command == 'insert':
                 command_handle._insert(sql_input,current_database)
+            elif sql_command == 'update':
+                command_handle._update(sql_input,current_database)
             elif sql_command == 'select':
                 command_handle._select(sql_input,current_database)
             elif sql_command == 'delete':

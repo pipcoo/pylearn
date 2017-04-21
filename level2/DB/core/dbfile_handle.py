@@ -67,7 +67,7 @@ def create_database(database_name):
     """
     if not os.path.exists(io_path(database_name)):
         os.mkdir(io_path(database_name))
-        print("数据库%s创建成功！~" % database_name)
+        print("数据库 %s 创建成功！~" % database_name)
     else:
         print("数据库已存在！~")
 
@@ -119,10 +119,10 @@ def create_table(current_database,create_command):
         table_create_template['create_tab_ddl'] = create_command
 
         if os.path.isfile(io_path(current_database,tabname)):
-            print('表%s已存在！'%tabname)
+            print('表 %s 已存在！'%tabname)
         else:
             write_tbf(current_database,tabname,table_create_template)
-            print('表%s创建成功！' % tabname)
+            print('表 %s 创建成功！' % tabname)
 
     else:
         print('语法错误！')
@@ -140,23 +140,17 @@ def write_tbf(current_database,tabname,tabdata):
 
 
 
-
-def make_insert_command(current_database,tabname,):
-    pass
-
-
 def check_types(check_data,_type):
     if _type ==  'int':
-        if isinstance(check_data,int):
+        if isinstance(check_data,int) or check_data is None:
             return True
         else:
             return False
     elif _type == 'str':
-        if isinstance(check_data,str):
+        if isinstance(check_data,str) :
             return True
         else:
             return False
-
 
 
 def insert_table(current_database,tabname,values):
@@ -180,7 +174,7 @@ def insert_table(current_database,tabname,values):
                     print('插入数据格式不匹配!')
     else:
         print('要插入值的数量不符！')
-    #print(coldata)
+
     if check_result:
         tabdata['table_data'].append([len(tabdata['table_data']),coldata])
         write_tbf(current_database, tabname, tabdata)
@@ -227,11 +221,21 @@ def update_table(current_database,tabname,set_value,where_key=''):
         return updated_count
 
 
-def columns_handle(columns,col_name):
-    for dict in columns:
-        for k in dict:
-            if k == col_name:
-                return dict[k],columns.index(dict)
+def columns_handle(columns,col_name=''):
+
+    columns_list = []
+    if col_name != '':
+        for dict in columns:
+            for k in dict:
+                if k == col_name:
+                    return dict[k],columns.index(dict)
+    else:
+        for dict in columns:
+            for k in dict:
+                columns_list.append(k)
+        else:
+            return columns_list
+
 
 def check_colname(current_database,tabname,check_colname):
     """
@@ -336,7 +340,7 @@ def drop_table(current_database,tabname):
     """
     if os.path.exists(io_path(current_database,tabname)):
         os.remove(io_path(current_database,tabname))
-        print("表%s已删除"%tabname)
+        print("表 %s 已删除"%tabname)
     else:
         print("表不存在！~")
 
@@ -349,9 +353,9 @@ def drop_databases(database_name):
     """
     if os.path.isdir(io_path(database_name)):
         os.removedirs(io_path(database_name))
-        print("数据库%s已删除！~"%database_name)
+        print("数据库 %s 已删除！~"%database_name)
     else:
-        print("数据库%s不存在！~" %database_name)
+        print("数据库 %s 不存在！~" %database_name)
 
 def print_row(row_list,dis_index):
 

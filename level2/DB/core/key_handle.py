@@ -33,6 +33,8 @@ def get_tablename(command_key,command):
         tablename = command_list[command_list.index('update') + 1]
     elif command_key == 'delete':
         tablename = command_list[command_list.index('from') + 1]
+    elif command_key == 'drop':
+        tablename = command_list[command_list.index('table') + 1]
     return tablename
 
 def get_colname(current_database,tabname,command):
@@ -137,6 +139,13 @@ def get_where_key(current_database,tabname,command):
                 break
     else:
         return where_key
-#
+
+
+def _update_set_key_handle(command):
+    set_value = []
+    set_value.append(command.split('=')[0].rstrip().split(' ')[-1])
+    set_value.append(command.split('=')[1].lstrip().split(' ')[0])
+    return set_value
+
 # a= "select * from staff_table where staff_id = 1 and phone like '133'"
 # print (get_where_key('emp','staff_table',a))
