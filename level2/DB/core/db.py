@@ -58,5 +58,21 @@ def sqlplus():
             print('输入错误！~')
 
 
-def sqlapi(command):
-    pass #todo
+def sqlapi(current_database,command):
+
+    sql_command = re.match('\w+', sql_input).group()
+
+    if sql_command == 'create':
+        command_handle._create(command, current_database)
+    elif sql_command == 'insert':
+        command_handle._insert(command, current_database)
+    elif sql_command == 'update':
+        command_handle._update(command, current_database)
+    elif sql_command == 'select':
+        return command_handle._select(command, current_database)
+    elif sql_command == 'delete':
+        command_handle._delete(command, current_database)
+    elif sql_command == 'drop':
+        command_handle._drop(command, current_database)
+    else:
+        print('输入错误！~')

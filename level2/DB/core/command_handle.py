@@ -48,14 +48,18 @@ def _select(command,current_database=''):
             dbfile_handle.print_result(current_database, tabname, \
                              dbfile_handle.select_table(current_database, tabname)[0], \
                              key_handle.get_colname(current_database, tabname,command))
+            return dbfile_handle.select_table(current_database, tabname)[0]
 
         elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
             dbfile_handle.print_result(current_database, tabname, \
                              dbfile_handle.select_table(current_database, tabname, \
                              key_handle.get_where_key(current_database, tabname,command))[0], \
                              key_handle.get_colname(current_database, tabname,command))
+            return dbfile_handle.select_table(current_database, tabname, \
+                             key_handle.get_where_key(current_database, tabname,command))[0]
         else:
             print('语法错误！~')
+            return None
 
 def _insert_value_handle(current_database,tabname,insert_value_list):
     tabdata = dbfile_handle.read_tbf(current_database, tabname)
@@ -132,7 +136,7 @@ def _update(command,current_database=''):
 
     tabname = check_dbuse_tabname(current_database, 'update', command)
     if tabname != '':
-        if re.match('update\s+\w+\s+set\s+\w+\s*=\s*\w+\.*',command) and 'where' not in command:
+        if re.match('update\s+\w+\s+set\s+\w+\s*=\s*.+',command) and 'where' not in command:
             set_value = key_handle._update_set_key_handle(command)
             if dbfile_handle.check_colname(current_database,tabname,set_value[0])[0]:
                 update_count = dbfile_handle.update_table(current_database,tabname,set_value)
