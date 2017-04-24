@@ -1,0 +1,1 @@
+{"unique": [], "cur_auto_add_num": 0, "columns": [{"staff_id": "int"}, {"name": "str"}, {"age": "int"}, {"phone": "str"}, {"dept": "str"}, {"enroll_date": "str"}], "auto_add_col": "staff_id", "not_null_col": ["staff_id"], "create_tab_ddl": "create table staff_table (staff_id int not null auto_increment,name str,age int ,phone str ,dept str,enroll_date str )", "table_data": []}
