@@ -94,6 +94,7 @@ def create_table(current_database,create_command):
     auto_add_col=''
     columns_info={}
     unique = []
+    unique_index = {}
     # create table emp （id int,name str)
     if re.match('create\s+table\s+.+\s+\(.*\)\Z',create_command):
         tabname = create_command.split(' ')[2]
@@ -107,6 +108,7 @@ def create_table(current_database,create_command):
 
             if re.search('unique',i):               #唯一关键字
                 unique.append(columns_name)
+                unique_index[columns_name]=[]
 
             if re.search('auto_increment',i) and auto_add_col == '':        #自增关键字
                 auto_add_col = columns_name
@@ -122,6 +124,7 @@ def create_table(current_database,create_command):
         table_create_template['auto_add_col'] = auto_add_col
         table_create_template['create_tab_ddl'] = create_command
         table_create_template['unique'] = unique
+        table_create_template['unique_index'] = unique_index
 
         if os.path.isfile(io_path(current_database,tabname)):
             print('表 %s 已存在！'%tabname)
@@ -198,6 +201,7 @@ def insert_table(current_database,tabname,values):
                     coldata.append(values[k])
                 else:
                     print('插入数据格式不匹配!')
+                    check_result = False
     else:
         print('要插入值的数量不符！')
         check_result = False
@@ -205,10 +209,32 @@ def insert_table(current_database,tabname,values):
     if tabdata['auto_add_col'] != '':
         tabdata['cur_auto_add_num'] = values[tabdata['auto_add_col']]
 
+    for unique_col in unique:
+        if unique_index[unique_col].count(values[unique_col]) > 0:
+            print('列 %s 有唯一索引 插入值 %s 重复'%(unique_col,values[unique_col]))
+            check_result = False
+            break
+        else:
+            unique_index[unique_col].append(values[unique_col])
+
+
     if check_result:
         tabdata['table_data'].append([len(tabdata['table_data']),coldata])
+        tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
 
+def index_maintenance (current_database,tabname,index_name,index_value,index_operation):
+    tabdata = read_tbf(current_database, tabname)
+    unique_index = tabdata['unique_index']
+
+    if index_operation == 'add':
+        pass
+    elif index_operation == 'mod':
+        pass
+    elif index_operation == 'del':
+        pass
+
+    return unique_index
 
 def delete_table(current_database,tabname,where_key=''):
     """
@@ -223,12 +249,15 @@ def delete_table(current_database,tabname,where_key=''):
     tabdata = read_tbf(current_database, tabname)
     data = tabdata['table_data']
     keep_data =[]
+
     for row in data:
         if row[0] in delete_list:
             delete_count+=1
         else:
             keep_data.append(row)
+
     tabdata['table_data'] = keep_data
+
     if delete_count > 0 :
         write_tbf(current_database, tabname, tabdata)
         return delete_count
@@ -458,7 +487,7 @@ def print_row(row_list,dis_index):
     dis_row = ''
     for i in row_list:
         if row_list.index(i) in dis_index:
-            dis_row += '| %s '%i
+            dis_row += '| %s '%(str(i).center(20))
     else:
         dis_row += '|'
     print ('-'*len(dis_row))
@@ -483,7 +512,7 @@ def print_result(current_database,tabname,display_list,display_col):
 
     if len(display_list) > 0:
         for d in display_col:
-            display_title += '| %s ' % d
+            display_title += '| %s ' % (('\"'+d.upper()+'\"').center(20))
         else:
             display_title += '|'
         print('-' * len(display_title))

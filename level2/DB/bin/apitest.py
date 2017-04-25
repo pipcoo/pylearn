@@ -27,6 +27,8 @@ db.sqlapi('emp','drop table staff_table')
 
 db.sqlapi('emp','create table staff_table (staff_id int not null auto_increment,name str unique,age int ,phone str ,dept str,enroll_date str )')
 
-print(db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li,22,13651054608,IT,2013-04-01\)'))
+db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li,22,13651054608,IT,2013-04-01\)')
 
-print(db.sqlapi('emp','select * from staff_table'))
+db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li2,22,13651054608,IT,2013-04-01\)')
+
+print(db.sqlapi('emp','select * from staff_table where staff_id >= 1'))
