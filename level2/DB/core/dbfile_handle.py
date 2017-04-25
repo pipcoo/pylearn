@@ -210,12 +210,13 @@ def insert_table(current_database,tabname,values):
         tabdata['cur_auto_add_num'] = values[tabdata['auto_add_col']]
 
     for unique_col in unique:
-        if unique_index[unique_col].count(values[unique_col]) > 0:
+        k,v = index_maintenance(current_database,tabname,unique_col,'add',values[unique_col])
+        if not k:
             print('列 %s 有唯一索引 插入值 %s 重复'%(unique_col,values[unique_col]))
             check_result = False
             break
         else:
-            unique_index[unique_col].append(values[unique_col])
+            unique_index=v
 
 
     if check_result:
@@ -223,16 +224,37 @@ def insert_table(current_database,tabname,values):
         tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
 
-def index_maintenance (current_database,tabname,index_name,index_value,index_operation):
+def index_maintenance (current_database,tabname,index_name,index_operation,index_value,new_index_value = ''):
+    """
+    唯一索引维护 增删改 
+    :param current_database: 
+    :param tabname: 
+    :param index_name: 
+    :param index_value: 
+    :param index_operation: 
+    :return: 
+    """
     tabdata = read_tbf(current_database, tabname)
     unique_index = tabdata['unique_index']
 
     if index_operation == 'add':
-        pass
+        if unique_index[index_name].count(index_value) > 0:
+            return False,None
+        else:
+            unique_index[index_name].append(index_value)
+            return True,unique_index
     elif index_operation == 'mod':
-        pass
+        if unique_index[index_name].count(index_value) > 0:
+            unique_index[index_name][unique_index[index_name].index(index_value)] = new_index_value
+            return True,unique_index
+        else:
+            return False,None
     elif index_operation == 'del':
-        pass
+        if unique_index[index_name].count(index_value) > 0:
+            unique_index[index_name].remove(index_value)
+            return True,unique_index
+        else:
+            return False,None
 
     return unique_index
 
@@ -248,17 +270,24 @@ def delete_table(current_database,tabname,where_key=''):
     delete_list = select_table(current_database,tabname,where_key)[1]
     tabdata = read_tbf(current_database, tabname)
     data = tabdata['table_data']
+    unique = tabdata['unique']
+    columns = tabdata['columns']
     keep_data =[]
 
     for row in data:
         if row[0] in delete_list:
-            delete_count+=1
+
+            for unique_col in unique:                   #删除对应索引
+                unique_index = index_maintenance(current_database, tabname, unique_col, 'del',
+                                                 row[1][columns_handle(columns,unique_col)[1]])[1]
+            delete_count += 1
         else:
             keep_data.append(row)
 
-    tabdata['table_data'] = keep_data
 
     if delete_count > 0 :
+        tabdata['table_data'] = keep_data
+        tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
         return delete_count
     else:
@@ -277,18 +306,26 @@ def update_table(current_database,tabname,set_value,where_key=''):
     tabdata = read_tbf(current_database, tabname)
     columns = tabdata['columns']
     data = tabdata['table_data']
+    unique = tabdata['unique']
+    unique_index = tabdata['unique_index']
     set_value_index = columns_handle(columns,set_value[0])[1]
     updated_count = 0
     result_date =[]
     for row in data:
         if row[0] in update_list:
-            row[1][set_value_index]=set_value[1]
+            if set_value[0] in unique :
+                unique_index = index_maintenance(current_database, tabname, set_value[0], 'mod',
+                                                 row[1][set_value_index], set_value[1])[1]
+
+            row[1][set_value_index] = set_value[1]
             result_date.append(row)
-            updated_count+=1
+            updated_count += 1
         else:
             result_date.append(row)
-    tabdata['table_data'] = result_date
+
     if updated_count > 0 :
+        tabdata['table_data'] = result_date
+        tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
         return updated_count
     else:
@@ -485,9 +522,11 @@ def print_row(row_list,dis_index):
     :return: 
     """
     dis_row = ''
-    for i in row_list:
-        if row_list.index(i) in dis_index:
-            dis_row += '| %s '%(str(i).center(20))
+    for i in dis_index:
+        dis_row += '| %s ' % (str(row_list[i]).center(20))
+    # for i in row_list:
+    #     if row_list.index(i) in dis_index:
+    #         dis_row += '| %s '%(str(i).center(20))
     else:
         dis_row += '|'
     print ('-'*len(dis_row))

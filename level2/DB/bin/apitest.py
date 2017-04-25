@@ -21,7 +21,7 @@ sys.path.append(BASE)
 from core import db
 
 
-
+db.sqlapi('','create database emp')
 
 db.sqlapi('emp','drop table staff_table')
 
@@ -31,4 +31,18 @@ db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li,22,13651054608,IT
 
 db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li2,22,13651054608,IT,2013-04-01\)')
 
+db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li2,22,13651054608,IT,2013-04-01\)')
+
+db.sqlapi('emp','update staff_table set name = wang1 where staff_id = 1')
+
+db.sqlapi('emp','delete from staff_table where staff_id = 2')
+
+db.sqlapi('emp','insert into staff_table values \(\'\',wang1,22,13651054608,IT,2013-04-01\)')
+
+db.sqlapi('emp','insert into staff_table values \(\'\',Alex Li,22,13651054608,IT,2013-04-01\)')
+
 print(db.sqlapi('emp','select * from staff_table where staff_id >= 1'))
+
+db.sqlapi('emp','select age,name,phone from staff_table where name like "Li" ')
+
+
