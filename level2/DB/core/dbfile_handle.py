@@ -85,6 +85,7 @@ def create_table(current_database,create_command):
     'not_null_col':[],
     'auto_add_col':'',
     'unique':[],
+    'unique_index': {},
     'cur_auto_add_num':0,
     'create_tab_ddl':''
 }
@@ -92,6 +93,7 @@ def create_table(current_database,create_command):
     not_null_col=[]
     auto_add_col=''
     columns_info={}
+    unique = []
     # create table emp （id int,name str)
     if re.match('create\s+table\s+.+\s+\(.*\)\Z',create_command):
         tabname = create_command.split(' ')[2]
@@ -100,15 +102,17 @@ def create_table(current_database,create_command):
             attr = i.split(' ')
             columns_name = attr[0]
             columns_attr = attr[1]
-            if attr.count('not') > 0 :
-                if attr[attr.index('not')+1] == 'null':
-                    not_null_col.append(columns_name)
-                else:
-                    print('关键字语法错误！')
-            if  attr.count('auto_increment') > 0 and auto_add_col == '':
+            if re.search('not\s+null',i):           #非空关键字
+                not_null_col.append(columns_name)
+
+            if re.search('unique',i):               #唯一关键字
+                unique.append(columns_name)
+
+            if re.search('auto_increment',i) and auto_add_col == '':        #自增关键字
                 auto_add_col = columns_name
-            elif  attr.count('auto_increment') > 0 and auto_add_col != '':
+            elif re.search('auto_increment',i)  and auto_add_col != '':
                 print('一个表只能有一个自增列！')
+
             columns_info[columns_name]=columns_attr
             columns.append(columns_info)
             columns_info={}
@@ -117,6 +121,7 @@ def create_table(current_database,create_command):
         table_create_template['not_null_col'] = not_null_col
         table_create_template['auto_add_col'] = auto_add_col
         table_create_template['create_tab_ddl'] = create_command
+        table_create_template['unique'] = unique
 
         if os.path.isfile(io_path(current_database,tabname)):
             print('表 %s 已存在！'%tabname)
@@ -128,12 +133,25 @@ def create_table(current_database,create_command):
         print('语法错误！')
 
 def read_tbf(current_database,tabname):
+    """
+    读取数据文件
+    :param current_database: 
+    :param tabname: 
+    :return: 
+    """
     f = open (io_path(current_database,tabname),"r",encoding="utf-8")
     tabdata = json.load(f)
     f.close()
     return tabdata
 
 def write_tbf(current_database,tabname,tabdata):
+    '''
+    写入数据文件
+    :param current_database: 
+    :param tabname: 
+    :param tabdata: 
+    :return: 
+    '''
     f = open(io_path(current_database,tabname),"w",encoding="utf-8")
     f.write(json.dumps(tabdata))
     f.close()
@@ -141,6 +159,12 @@ def write_tbf(current_database,tabname,tabdata):
 
 
 def check_types(check_data,_type):
+    """
+    数据类型检查 判断是 字符还是 数值型
+    :param check_data: 
+    :param _type: 
+    :return: 
+    """
     if _type ==  'int':
         if isinstance(check_data,int) or check_data is None:
             return True
@@ -164,6 +188,8 @@ def insert_table(current_database,tabname,values):
     tabdata = read_tbf(current_database,tabname)
     coldata = []
     columns = tabdata['columns']
+    unique = tabdata['unique']
+    unique_index = tabdata['unique_index']
     check_result =True
     if len(values) == len(columns):
         for dict in columns:
@@ -174,6 +200,10 @@ def insert_table(current_database,tabname,values):
                     print('插入数据格式不匹配!')
     else:
         print('要插入值的数量不符！')
+        check_result = False
+
+    if tabdata['auto_add_col'] != '':
+        tabdata['cur_auto_add_num'] = values[tabdata['auto_add_col']]
 
     if check_result:
         tabdata['table_data'].append([len(tabdata['table_data']),coldata])
@@ -181,6 +211,13 @@ def insert_table(current_database,tabname,values):
 
 
 def delete_table(current_database,tabname,where_key=''):
+    """
+    删除表
+    :param current_database: 
+    :param tabname: 
+    :param where_key: 
+    :return: 
+    """
     delete_count = 0
     delete_list = select_table(current_database,tabname,where_key)[1]
     tabdata = read_tbf(current_database, tabname)
@@ -199,6 +236,14 @@ def delete_table(current_database,tabname,where_key=''):
         return delete_count
 
 def update_table(current_database,tabname,set_value,where_key=''):
+    """
+    更新表
+    :param current_database: 
+    :param tabname: 
+    :param set_value: 
+    :param where_key: 
+    :return: 
+    """
     update_list = select_table(current_database, tabname, where_key)[1]
     tabdata = read_tbf(current_database, tabname)
     columns = tabdata['columns']
@@ -222,6 +267,12 @@ def update_table(current_database,tabname,set_value,where_key=''):
 
 
 def columns_handle(columns,col_name=''):
+    """
+    列名处理  传入列名 返回 列所在的索引编号 和 类型 不传入列名 直接返回全部列名
+    :param columns: 
+    :param col_name: 
+    :return: 
+    """
 
     columns_list = []
     if col_name != '':
@@ -260,6 +311,14 @@ def check_colname(current_database,tabname,check_colname):
 
 
 def row_handle(data,col_index,_judge,judge_key):
+    """
+    数据判断 返回符合传入的判断参数的所有数据 
+    :param data: 
+    :param col_index: 
+    :param _judge: 
+    :param judge_key: 
+    :return: 
+    """
     result_data = []
     result_index = []
     for row in data:
@@ -294,6 +353,13 @@ def row_handle(data,col_index,_judge,judge_key):
         return result_data,result_index
 
 def key_handle(data,where_key_index,surplus_row_index=[]):
+    """
+    where条件处理
+    :param data: 
+    :param where_key_index: 
+    :param surplus_row_index: 
+    :return: 
+    """
 
     if len(where_key_index) > 0:
         current_handle = where_key_index.pop()
@@ -331,6 +397,31 @@ def select_table(current_database,tabname,where_key=''):
 
         return data,result_data_index
 
+def select_api_return(current_database,tabname,display_list,display_col):
+    """
+    处理查询api 返回 查询结果的列表
+    :param current_database: 
+    :param tabname: 
+    :param display_list: 
+    :param display_col: 
+    :return: 
+    """
+    tabdata = read_tbf(current_database, tabname)
+    columns = tabdata['columns']
+    select_idx = []
+    result_set = []
+
+    for col_name in display_col:
+        select_idx.append(columns_handle(columns, col_name)[1])
+
+    for i in display_list:
+        row_set = []
+        for el_idx in select_idx:
+            row_set.append(i[1][el_idx])
+        result_set.append(row_set)
+    return display_col,result_set
+
+
 def drop_table(current_database,tabname):
     """
     删除表
@@ -358,7 +449,12 @@ def drop_databases(database_name):
         print("数据库 %s 不存在！~" %database_name)
 
 def print_row(row_list,dis_index):
-
+    """
+    行打印处理
+    :param row_list: 
+    :param dis_index: 
+    :return: 
+    """
     dis_row = ''
     for i in row_list:
         if row_list.index(i) in dis_index:
@@ -370,6 +466,14 @@ def print_row(row_list,dis_index):
     return len(dis_row)
 
 def print_result(current_database,tabname,display_list,display_col):
+    """
+    打印结果集
+    :param current_database: 
+    :param tabname: 
+    :param display_list: 
+    :param display_col: 
+    :return: 
+    """
     tabdata = read_tbf(current_database, tabname)
     columns = tabdata['columns']
     display_idx = []

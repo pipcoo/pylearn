@@ -59,8 +59,16 @@ def sqlplus():
 
 
 def sqlapi(current_database,command):
+    """
+    数据库 api 接口
+    :param current_database: 
+    :param command: 
+    :return: 
+    """
 
-    sql_command = re.match('\w+', sql_input).group()
+    command = command.replace('\\', '')
+
+    sql_command = re.match('\w+', command).group()
 
     if sql_command == 'create':
         command_handle._create(command, current_database)
