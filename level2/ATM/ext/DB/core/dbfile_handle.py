@@ -12,9 +12,7 @@
 @time: 2017/4/12 23:02
 """
 
-import os,re,json
-
-import shutil
+import os,re,json,shutil
 
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -517,7 +515,7 @@ def drop_databases(database_name):
     """
     if os.path.isdir(io_path(database_name)):
         shutil.rmtree(io_path(database_name))
-        print("数据库 %s 已删除！~"%database_name)
+        print("数据库 %s 已删除！~" %database_name)
     else:
         print("数据库 %s 不存在！~" %database_name)
 
