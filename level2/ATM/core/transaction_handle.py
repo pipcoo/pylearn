@@ -1,6 +1,10 @@
-from DB.core import db
+import os,sys
 
-a = db.sqlapi('emp','select * from staff_table')
-b = db.sqlapi('emp','insert into staff_table (name) values \(\'li\'\)')
-print (a)
-print (b)
+BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+sys.path.append(BASE)
+
+from ext.DB.core import db
+
+from config.logger import logging
+
