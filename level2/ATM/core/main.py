@@ -1,75 +1,34 @@
+# @---wufeng---
 
 import os,sys,re
-
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 sys.path.append(BASE)
 
-from ext.DB.core import db
-
-from config.logger import log
-
 from config import setting
-
-
-userdata = {
-    'auth_status' : False,
-    'amount' : None
-}
-
-
-def dbapi(command):
-    """
-    数据库接口
-    :param command:   接收sql语句传入
-    :return: 
-    """
-    if setting.DBMODE == 'filedb':
-        return db.sqlapi(setting.DBNAME,command)
-    elif setting.DBMODE == 'mysql':
-        pass #todo
-
-
-def auth():
-    pass
-
-
-
-def user_account_view():
-    pass
-def repayment():
-    pass
-def withdraw():
-    pass
-def transfer_accounts():
-    pass
-def bill_view():
-    pass
-
-
-def account_view():
-    pass
-def set_limit():
-    pass
-def create_account():
-    pass
-def cencel_account():
-    pass
-def frozen_account():
-    pass
+from core import atm
 
 
 def menu_print(menu_level_name,menu_list):
+    """
+    处理菜单打印
+    :param menu_level_name: 
+    :param menu_list: 
+    :return: 
+    """
     exit_flag = False
     while not exit_flag:
         print(menu_list)
-        _input = input('输入选择编号: \n>>')
+        _input = input('输入选择编号:\n>>')
         if _input == '0':
             exit_flag = True
         else:
             menu_select(menu_level_name, _input)
 
 def account_manager():
+    """
+    用户功能菜单
+    :return: 
+    """
     menu1 = '''
     ------- Bank -------
     1、个人账户信息
@@ -82,6 +41,10 @@ def account_manager():
     menu_print('menu1', menu1)
 
 def bank_clerk():
+    """
+    银行职员菜单
+    :return: 
+    """
     menu2 = '''
     ------- Bank clerk Manager -------
     1、账户查看
@@ -95,6 +58,12 @@ def bank_clerk():
 
 
 def menu_select(menu_no,select_num):
+    """
+    处理惨淡选择对应关系
+    :param menu_no: 
+    :param select_num: 
+    :return: 
+    """
 
     menu_list0 = {
         '1': account_manager,
@@ -102,19 +71,19 @@ def menu_select(menu_no,select_num):
     }
 
     menu_list1 = {
-        '1': user_account_view,
-        '2': repayment,
-        '3': withdraw,
-        '4': transfer_accounts,
-        '5': bill_view
+        '1': atm.user_account_view,
+        '2': atm.repayment,
+        '3': atm.withdraw,
+        '4': atm.transfer_accounts,
+        '5': atm.bill_view
     }
 
     menu_list2 = {
-        '1': account_view,
-        '2': set_limit,
-        '3': create_account,
-        '4': cencel_account,
-        '5': frozen_account
+        '1': atm.account_view,
+        '2': atm.set_limit,
+        '3': atm.create_account,
+        '4': atm.cencel_account,
+        '5': atm.frozen_account
     }
 
     menu_level = {
@@ -131,6 +100,10 @@ def menu_select(menu_no,select_num):
 
 
 def run():
+    """
+    运行入口
+    :return: 
+    """
 
     menu0 = '''
     1、个人用户
