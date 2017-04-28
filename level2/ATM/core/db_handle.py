@@ -6,7 +6,7 @@ sys.path.append(BASE)
 
 from ext.DB.core import db
 from config.logger import log
-
+from config import setting
 
 def dbapi(command):
     """
@@ -15,7 +15,7 @@ def dbapi(command):
     :return: 
     """
     if setting.DBMODE == 'filedb':
-        log.info('dbsql: %s'%command)
+        log.info('dbsql: %s'%command.replace('\\',''))
         return db.sqlapi(setting.DBNAME,command)
     elif setting.DBMODE == 'mysql':
         pass #todo
