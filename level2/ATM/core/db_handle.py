@@ -16,7 +16,9 @@ def dbapi(command):
     """
     if setting.DBMODE == 'filedb':
         log.info('dbsql: %s'%command.replace('\\',''))
-        return db.sqlapi(setting.DBNAME,command)
+        result = db.sqlapi(setting.DBNAME,command)
+        log.info(result)
+        return result
     elif setting.DBMODE == 'mysql':
         pass #todo
 

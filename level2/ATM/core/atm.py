@@ -32,12 +32,23 @@ def bill_view():
 
 
 def account_view():
-    pass
+    db('select * from account')
 def set_limit():
     pass
 def create_account():
-    pass
+    account_data = {
+        'userid':None,
+        'username':None,
+        'password':None,
+        'rule':None
+    }
+    create_dis = '''
+    1、输入用户名
+    2、输入密码
+    '''
 def cencel_account():
     pass
 def frozen_account():
     pass
+
+account_view()

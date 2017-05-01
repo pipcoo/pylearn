@@ -18,13 +18,19 @@ def init_atmdb():
     log.info('------------- database %s init'%dbname)
     db('create database %s'%dbname)
     log.info('database %s created'%dbname)
-    db('create table account \(userid int auto_increment,username str not null unique,account_status str,password str\)')
+    db('create table account \(userid int auto_increment,'
+       'username str not null unique,account_status str,password str,rule str,create_time str\)')
+    log.info('init super admin info')
+    db('insert into account values \(\'\',admin,open,admin,admin,%s\)'%setting.now)
     log.info('table account created')
-    db('create table party \(party_id int auto_increment,userid int ,card_num str,card_type str,create_time str,card_balance float\)')
+    db('create table party \(party_id int auto_increment,'
+       'userid int ,card_num str,card_type str,create_time str,card_balance float\)')
     log.info('table party created')
-    db('create table transaction_rate \(rate_id int auto_increment,transaction_type str,transaction_rate float\)')
+    db('create table transaction_rate \(rate_id int auto_increment,'
+       'transaction_type str,transaction_rate float\)')
     log.info('table transaction_rate created')
-    db('create table transaction (transaction_id int auto_increment,transaction_type str,party_id int,counterparty_id int,amount float,txdate str)')
+    db('create table transaction (transaction_id int auto_increment,'
+       'transaction_type str,party_id int,counterparty_id int,amount float,txdate str)')
     log.info('table transaction created')
     log.info('------------- database %s init end' % dbname)
 
