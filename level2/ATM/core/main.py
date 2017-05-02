@@ -24,7 +24,7 @@ def menu_print(menu_level_name,menu_list):
         else:
             menu_select(menu_level_name, _input)
 
-def account_manager():
+def general_account():
     """
     用户功能菜单
     :return: 
@@ -66,7 +66,7 @@ def menu_select(menu_no,select_num):
     """
 
     menu_list0 = {
-        '1': account_manager,
+        '1': general_account,
         '2': bank_clerk
     }
 
