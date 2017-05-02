@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys,os,logging
 from . import setting
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

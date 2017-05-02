@@ -294,7 +294,8 @@ def delete_table(current_database,tabname,where_key=''):
 
     if delete_count > 0 :
         tabdata['table_data'] = keep_data
-        tabdata['unique_index'] = unique_index
+        if len(unique) > 0:
+            tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
         return delete_count
     else:

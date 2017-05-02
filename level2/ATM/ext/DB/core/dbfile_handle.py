@@ -12,7 +12,9 @@
 @time: 2017/4/12 23:02
 """
 
-import os,re,json,shutil
+import os,re,json
+
+import shutil
 
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -292,7 +294,8 @@ def delete_table(current_database,tabname,where_key=''):
 
     if delete_count > 0 :
         tabdata['table_data'] = keep_data
-        tabdata['unique_index'] = unique_index
+        if len(unique)>0:
+            tabdata['unique_index'] = unique_index
         write_tbf(current_database, tabname, tabdata)
         return delete_count
     else:
@@ -515,7 +518,7 @@ def drop_databases(database_name):
     """
     if os.path.isdir(io_path(database_name)):
         shutil.rmtree(io_path(database_name))
-        print("数据库 %s 已删除！~" %database_name)
+        print("数据库 %s 已删除！~"%database_name)
     else:
         print("数据库 %s 不存在！~" %database_name)
 

@@ -85,6 +85,31 @@ def _select(command,current_database=''):
         else:
             print('语法错误！~')
             return None
+def _select_noprint(command,current_database=''):
+    """
+    处理 select查询API的接口
+    :param command: 
+    :param current_database: 
+    :return: 
+    """
+
+    tabname = check_dbuse_tabname(current_database,'select',command)
+    if tabname != '':
+        if re.match('select\s+(\*|.+)\s+from\s+\w+\.*',command) and 'where' not in command:
+
+            return dbfile_handle.select_api_return(current_database, tabname,
+                             dbfile_handle.select_table(current_database, tabname)[0],
+                             key_handle.get_colname(current_database, tabname,command))
+
+        elif re.match('select\s+(\*|.+)\s+from\s+\w+\s+where\.*',command):
+
+            return dbfile_handle.select_api_return(current_database, tabname,
+                             dbfile_handle.select_table(current_database, tabname,
+                             key_handle.get_where_key(current_database, tabname,command))[0],
+                             key_handle.get_colname(current_database, tabname,command))
+        else:
+            print('语法错误！~')
+            return None
 
 def _insert_value_handle(current_database,tabname,insert_value_list):
     """

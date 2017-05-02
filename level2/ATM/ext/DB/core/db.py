@@ -79,7 +79,7 @@ def sqlapi(current_database,command):
     elif sql_command == 'update':
         command_handle._update(command, current_database)
     elif sql_command == 'select':
-        return command_handle._select(command, current_database)
+        return command_handle._select_noprint(command, current_database)
     elif sql_command == 'delete':
         command_handle._delete(command, current_database)
     elif sql_command == 'drop':
