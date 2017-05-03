@@ -6,6 +6,7 @@ sys.path.append(BASE)
 
 from core import db_handle
 from config.logger import log
+from core import atm
 from config import setting
 db = db_handle.dbapi
 dbssc = db_handle.dbapi_select_single_col
@@ -53,8 +54,8 @@ def transaction_handle(party_id,txf,amount,txdesc,counterparty_id = ''):
 
 def transaction_record(txf, acc1_id, acc2_id, amount,txdesc):
     db('insert into transaction values \(\'\',%s,%s,%s,%s,%s,%s,%s\)' %
-       (txf, get_user_info(acc1_id)[1], get_user_info(acc2_id)[1], amount, sign_handle(amount,transaction_features[txf]),setting.now,txdesc))
+       (txf, acc1_id, acc2_id, amount, sign_handle(amount,transaction_features[txf]),setting.now,txdesc))
 
 
 #transaction_handle(1,'transfer',1000,'转账xxx1',2)
-transaction_handle(1,'withdraw',5000,'取款5000')
+#transaction_handle(1,'withdraw',5000,'取款5000')

@@ -5,6 +5,7 @@ BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE)
 
 from core import db_handle
+from core import transaction_handle
 from config.logger import log
 from config import setting
 db = db_handle.dbapi
@@ -13,7 +14,8 @@ dbssv = db_handle.dbapi_select_single_value
 
 userdata = {
     'auth_status' : False,
-    'amount' : None
+    'amount' : None,
+    'userid': 2
 }
 
 user_type = {'1':'bank_clerk','2':'general_account'}
@@ -28,7 +30,6 @@ def auth():
 
 def user_account_view(username):
     dis_template = '账户名: %s \t卡号: %s \t开户时间: %s \t剩余额度: %s \t账户状态: %s'
-
     for row in db('select userid,card_num,create_time,card_balance,party_id from party')[1]:
         row[4] = dbssc('select account_status from account where userid = %s' % row[0])[0]
         row[0] = dbssc('select username from account where userid = %s' % row[0])[0]
@@ -37,12 +38,42 @@ def user_account_view(username):
             print(dis_template % tuple(row))
     input('任意键退出')
 
+def select_party(userid,txtype):
+    party_list = dbssc('select card_num from party where userid = %s' % (userid))
+    rownum = 0
+    rownum_list = []
+    for i in party_list:
+        print('%s. 卡号[%s]'%(rownum,i))
+        rownum_list.append(rownum)
+        rownum+=1
+    exit_flag = False
+    while not exit_flag:
+        select_card_num = int(input('请输入选择 %s 账户的编号：\n>>'%transaction_type[txtype]))
+        if select_card_num in rownum_list:
+            exit_flag = True
+            select_card = party_list[select_card_num]
+        else:
+            print('输入账号编码错误')
+            log.warn('输入账号编码错误')
+    party_id = dbssv('select party_id from party where card_num = %s' % (select_card))
+    return party_id
+
 def repayment():
-    pass
+    repayment_dis = ['存款金额']
+    party_id = select_party(userdata['userid'],'repayment')
+    repayment_amount = float(input_handle(repayment_dis)[0])
+    transaction_handle.transaction_handle(party_id, 'repayment', repayment_amount, '存入'+ str(repayment_amount))
+
 def withdraw():
-    pass
+    repayment_dis = ['取现金额']
+    party_id = select_party(userdata['userid'], 'withdraw')
+    repayment_amount = float(input_handle(repayment_dis)[0])
+    transaction_handle.transaction_handle(party_id, 'withdraw', repayment_amount, '提现' + str(repayment_amount))
+
 def transfer_accounts():
+
     pass
+
 def bill_view():
     dis_template = '交易时间: %s \t用户名： %s \t账号: %s \t交易类型: %s \t交易金额: %s \t对手用户名: %s \t对手账号: %s \t交易信息: %s'
     transaction_hist_list = db('select txdate,party_id,transaction_type,tx_amount_dis,counterparty_id,txdesc from transaction')
@@ -150,7 +181,6 @@ def user_type_select():
             print('请输入正确的类型编码')
 
     return user_select
-
 
 def input_handle(in_data_list):
 
