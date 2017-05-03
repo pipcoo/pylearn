@@ -46,7 +46,6 @@ def dbapi_select_single_value(command):
     """
     result = dbapi_select_single_col(command)
     if len(result) > 1:
-
-        return result[0]
-    else:
         log.error('存在多个值')
+    else:
+        return result[0]

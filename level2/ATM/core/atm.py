@@ -17,7 +17,11 @@ userdata = {
 }
 
 user_type = {'1':'bank_clerk','2':'general_account'}
-
+transaction_type = {
+    'repayment':'存入',
+    'withdraw':'提现',
+    'transfer':'转账'
+}
 
 def auth():
     pass
@@ -40,14 +44,42 @@ def withdraw():
 def transfer_accounts():
     pass
 def bill_view():
-    pass
+    dis_template = '交易时间: %s \t用户名： %s \t账号: %s \t交易类型: %s \t交易金额: %s \t对手用户名: %s \t对手账号: %s \t交易信息: %s'
+    transaction_hist_list = db('select txdate,party_id,transaction_type,tx_amount_dis,counterparty_id,txdesc from transaction')
+    if len(transaction_hist_list[1]) > 0:
+        for row in transaction_hist_list[1]:
+            party_id = row[1]
+            row.insert(1,get_user_info(party_id)[0])
+            row[2] = get_user_info(party_id)[1]
+            if row[5] is not None:
+                counterparty_id = row[5]
+                row.insert(5,get_user_info(party_id)[0])
+                row[6] = get_user_info(counterparty_id)[1]
+            else:
+                row.insert(5,None)
+            row[3]=transaction_type[row[3]]
+            print(dis_template % tuple(row))
+    else:
+        print('没有消费记录')
+    input('任意键退出')
+
+def get_user_info(party_id):
+    if party_id is not None:
+        user_id = dbssv('select userid from party where party_id = %s' %(party_id))
+        username = dbssv('select username from account where userid = %s' % (user_id))
+        card_num = dbssv('select card_num from party where party_id = %s' % (party_id) )
+        return username,card_num
+    else:
+        log.warn('没有交易对手')
+
+
 
 
 def account_view():
-    dis_template = '账户名: %s \t卡号: %s \t开户时间: %s \t剩余额度: %s \t账户状态: %s'
+    dis_template = '账户名: %s \t卡号: %s \t开户时间: %s \t信用额度: %s \t可用额度: %s \t账户状态: %s'
 
-    for row in db('select userid,card_num,create_time,card_balance,party_id from party')[1]:
-        row[4] = dbssc('select account_status from account where userid = %s' % row[0])[0]
+    for row in db('select userid,card_num,create_time,card_limit,card_balance,party_id from party')[1]:
+        row[5] = dbssc('select account_status from account where userid = %s' % row[0])[0]
         row[0] = dbssc('select username from account where userid = %s' % row[0])[0]
         log.debug(row)
         print(dis_template % tuple(row))
@@ -60,7 +92,7 @@ def set_limit():
         print('账户不存在')
         log.warn('账户 %s 不存在' % set_limit_name)
     else:
-        db('update account set account_status = %d where userid = %d '
+        db('update party set card_balance = %d where userid = %d '
            %(int(set_limit_new_amount),dbssc('select userid from account where username = %s'%(set_limit_name))[0]))
 
 def create_account():
@@ -97,10 +129,10 @@ def frozen_account():
 
 def create_party(user_id):
     card_type_default ='credit'
-    card_num = str(int(random.uniform(0,1)*10**16))
+    card_num = str(int(random.uniform(0.4,0.5)*10**16))
     amount_defalut = setting.ACCOUNT_DEFAULT_LIMIT
-    db('insert into party values \(\'\',%s,%s,%s,%s,%d\)'
-       %(user_id,card_num,card_type_default,setting.now,amount_defalut))
+    db('insert into party values \(\'\',%s,%s,%s,%s,%d,%d\)'
+       %(user_id,card_num,card_type_default,setting.now,amount_defalut,amount_defalut))
 
 def user_type_select():
     user_type_dis = '''

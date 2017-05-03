@@ -24,7 +24,7 @@ def init_atmdb():
     db('insert into account values \(\'\',admin,open,admin,admin,%s\)'%setting.now)
     log.info('table account created')
     db('create table party \(party_id int auto_increment,'
-       'userid int ,card_num str,card_type str,create_time str,card_balance float\)')
+       'userid int ,card_num str,card_type str,create_time str,card_balance float,card_limit float\)')
     log.info('table party created')
     db('create table transaction_rate \(rate_id int auto_increment,'
        'transaction_type str,transaction_rate float\)')
@@ -33,7 +33,7 @@ def init_atmdb():
     db('insert into transaction_rate values \(\'\',repayment,0\)' )
     log.info('table transaction_rate created')
     db('create table transaction (transaction_id int auto_increment,'
-       'transaction_type str,party_id int,counterparty_id int,amount float,txdate str)')
+       'transaction_type str,party_id int,counterparty_id int,amount float,tx_amount_dis str,txdate str,txdesc str)')
     log.info('table transaction created')
     log.info('------------- database %s init end' % dbname)
 

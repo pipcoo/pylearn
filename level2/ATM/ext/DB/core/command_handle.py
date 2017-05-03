@@ -53,7 +53,7 @@ def _show(command,current_database=''):
         else:
             print('请选择当前数据库~')
     else:
-        print('语法错误！~')
+        print('show语法错误！~')
 
 def _select(command,current_database=''):
     """
@@ -108,7 +108,7 @@ def _select_noprint(command,current_database=''):
                              key_handle.get_where_key(current_database, tabname,command))[0],
                              key_handle.get_colname(current_database, tabname,command))
         else:
-            print('语法错误！~')
+            print('select语法错误！~')
             return None
 
 def _insert_value_handle(current_database,tabname,insert_value_list):
@@ -198,7 +198,7 @@ def _insert(command,current_database):
                             new_value_list.append('')
                     _insert_value_handle(current_database, tabname, new_value_list)
         else:
-            print('语法错误！~')
+            print('insert语法错误！~')
 
 
 def _update(command,current_database=''):
@@ -218,7 +218,7 @@ def _update(command,current_database=''):
                 print ('%d row updated'%(update_count))
             else:
                 print('更新的列 %s 不在表 %s 中'%(set_value[0],tabname))
-        elif re.match('update\s+\w+\s+set\s+\w+\s*=\s*\w+\s+where.+', command):
+        elif re.match('update\s+\w+\s+set\s+\w+\s*=\s*.+\s+where.+', command):
             set_value = key_handle._update_set_key_handle(command)
             if dbfile_handle.check_colname(current_database, tabname, set_value[0])[0]:
                 update_count = dbfile_handle.update_table(current_database, tabname,set_value,
@@ -227,7 +227,7 @@ def _update(command,current_database=''):
             else:
                 print('更新的列 %s 不在表 %s 中' % (set_value[0], tabname))
         else:
-            print('语法错误！~')
+            print('update语法错误！~')
 
 def _drop(command,current_database=''):
     """
@@ -246,7 +246,7 @@ def _drop(command,current_database=''):
     elif re.match('drop\s+database+\s+\w+',command):
         dbfile_handle.drop_databases(current_database)
     else:
-        print('语法错误！~')
+        print('drop语法错误！~')
 
 
 def _delete(command,current_database):
@@ -268,7 +268,7 @@ def _delete(command,current_database):
                                        key_handle.get_where_key(current_database, tabname, command))
             print('%d row deleted' % (delete_count))
         else:
-            print('语法错误！~')
+            print('delete语法错误！~')
 
 
 def _create(command,current_database=''):
@@ -288,7 +288,7 @@ def _create(command,current_database=''):
         database_name = command.replace(' ','').split('database')[1]
         dbfile_handle.create_database(database_name)
     else:
-        print('语法错误！~')
+        print('create语法错误！~')
 
 
 def _use(command):

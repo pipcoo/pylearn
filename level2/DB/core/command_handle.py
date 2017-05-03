@@ -218,7 +218,7 @@ def _update(command,current_database=''):
                 print ('%d row updated'%(update_count))
             else:
                 print('更新的列 %s 不在表 %s 中'%(set_value[0],tabname))
-        elif re.match('update\s+\w+\s+set\s+\w+\s*=\s*\w+\s+where.+', command):
+        elif re.match('update\s+\w+\s+set\s+\w+\s*=\s*.+\s+where.+', command):
             set_value = key_handle._update_set_key_handle(command)
             if dbfile_handle.check_colname(current_database, tabname, set_value[0])[0]:
                 update_count = dbfile_handle.update_table(current_database, tabname,set_value,
