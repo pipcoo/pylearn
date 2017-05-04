@@ -31,6 +31,7 @@ def init_atmdb():
     db('insert into transaction_rate values \(\'\',withdraw,%s\)' % setting.CASH_WITHDRAWAL_RATE)
     db('insert into transaction_rate values \(\'\',transfer,%s\)' % setting.TRANSFER_RATE)
     db('insert into transaction_rate values \(\'\',repayment,0\)' )
+    db('insert into transaction_rate values \(\'\',payment,0\)' )
     log.info('table transaction_rate created')
     db('create table transaction (transaction_id int auto_increment,'
        'transaction_type str,party_id int,counterparty_id int,amount float,tx_amount_dis str,txdate str,txdesc str)')

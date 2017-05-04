@@ -6,7 +6,8 @@ sys.path.append(BASE)
 
 from config import setting
 from core import atm
-
+from core.auth import login_required
+userdata = atm.userdata
 
 def menu_print(menu_level_name,menu_list):
     """
@@ -24,7 +25,8 @@ def menu_print(menu_level_name,menu_list):
         else:
             menu_select(menu_level_name, _input)
 
-def general_account():
+@login_required
+def general_account(userdata,usertype):
     """
     用户功能菜单
     :return: 
@@ -35,12 +37,13 @@ def general_account():
     2、还款
     3、取款
     4、转账
-    5、账单
+    5、个人账单明细
     0、退出
     '''
     menu_print('menu1', menu1)
 
-def bank_clerk():
+@login_required
+def bank_clerk(userdata,usertype):
     """
     银行职员菜单
     :return: 
@@ -52,6 +55,7 @@ def bank_clerk():
     3、开户
     4、销户
     5、冻结
+    6、交易流水
     0、退出
     '''
     menu_print('menu2', menu2)
@@ -75,7 +79,7 @@ def menu_select(menu_no,select_num):
         '2': atm.repayment,
         '3': atm.withdraw,
         '4': atm.transfer_accounts,
-        '5': atm.bill_view
+        '5': atm.user_bill_view
     }
 
     menu_list2 = {
@@ -83,7 +87,8 @@ def menu_select(menu_no,select_num):
         '2': atm.set_limit,
         '3': atm.create_account,
         '4': atm.cencel_account,
-        '5': atm.frozen_account
+        '5': atm.frozen_account,
+        '6': atm.bill_view
     }
 
     menu_level = {
@@ -94,11 +99,16 @@ def menu_select(menu_no,select_num):
     }
 
     if select_num in menu_level[menu_no]:
-        return menu_level[menu_no][select_num]()
+        if menu_no == 'menu_list0' and select_num == '1':
+            return menu_level[menu_no][select_num](userdata,'admin')
+        elif menu_no == 'menu_list0' and select_num == '2':
+            return menu_level[menu_no][select_num](userdata,'general_account')
+        else:
+            return menu_level[menu_no][select_num]()
     else:
         print('请输入正确的编号')
 
-
+#@login_required
 def run():
     """
     运行入口
@@ -114,4 +124,6 @@ def run():
 
 
 
-run()
+# run()
+#
+# atm.payapi(2000,'小米盒子')
