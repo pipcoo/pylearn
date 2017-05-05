@@ -50,8 +50,8 @@ def login_required(func):
                 exit("用户认证失败")
     return wrapper
 
-@login_required
-def rr(data,user_type):
-    print(data)
-
-rr(atm.userdata,'general_account')
+# @login_required
+# def rr(data,user_type):
+#     print(data)
+#
+# rr(atm.userdata,'general_account')
