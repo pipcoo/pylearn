@@ -1,13 +1,15 @@
 # @---wufeng---
 # -*- coding: utf-8 -*-
 import os,sys,re,random
-BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE)
+# BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# sys.path.append(BASE)
 
 from core import db_handle
 from core import transaction_handle
 from config.logger import log
 from config import setting
+
+
 db = db_handle.dbapi
 dbssc = db_handle.dbapi_select_single_col
 dbssv = db_handle.dbapi_select_single_value
@@ -19,6 +21,7 @@ userdata = {
 }
 
 user_type = {'1':'bank_clerk','2':'general_account'}
+
 transaction_type = {
     'repayment':'存入',
     'withdraw':'提现',
@@ -67,7 +70,7 @@ def repayment():
     :return: 
     """
     repayment_dis = ['存款金额']
-    party_id = select_party(userdata['userid'],'repayment')
+    party_id = select_party(userdata['userid'], 'repayment')
     repayment_amount = float(input_handle(repayment_dis)[0])
     transaction_handle.transaction_handle(party_id, 'repayment', repayment_amount, '存入'+ str(repayment_amount))
 
@@ -273,12 +276,5 @@ def input_handle(in_data_list):
             out_data_list.append(input('请输入 %s :'%i))
     return out_data_list
 
-def pay(amount,txdesc):
-    """
-    结算接口
-    :return: 
-    """
-    party_id = select_party(userdata['userid'], 'payment')
-    transaction_handle.transaction_handle(party_id, 'payment', amount, '支付' + txdesc )
-    return True
+
 

@@ -20,7 +20,8 @@ import os,sys,re
 BASE=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE)
 
-from core.atm import pay
+from core.payapi import pay
+from core.atm import userdata
 
 '''read_of_file 功能负责读取文件 返回一个字典类的结构数据'''
 def read_of_file():
@@ -122,7 +123,7 @@ def atmpay():
     for i in range(len(shoppingcart)):
         order.append(shoppingcart[i])
         #__db[0][username]['salary'] -= shoppingcart[i][2]
-        if pay(shoppingcart[i][2],'支付 ' + shoppingcart[i][1]):
+        if pay(userdata,'general_account','支付 ' + shoppingcart[i][1],shoppingcart[i][2]):
             pay_result =True
             __db[1][shoppingcart[i][0]][2] -= 1
             this_time_shopping.append(shoppingcart[i])

@@ -15,9 +15,12 @@ ATM记录操作日志
 
 ### 实现功能 
 
-第一次运行需要  执行 init_atmdb.py 进行初始化数据库
+- 第一次运行需要  执行 init_atmdb.py 进行初始化数据库
 
-执行atm_start.py 运行atm的功能 
+- 执行atm_start.py 运行atm的功能 
+
+- 执行shoppint_start.py  运行购物功能，该模块沿用上一阶段作业的购物车程序，在结算模块加入采用ATM结算，会直接调用ATM接口程序
+
 
 ### 目录结构
 
@@ -70,7 +73,6 @@ D:.
 │  │  │  │  __init__.py
 │  │  │  │
 │  │  │  └─__pycache__
-
 │  │  │
 │  │  └─data
 │  │      │  __init__.py

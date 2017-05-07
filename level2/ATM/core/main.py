@@ -4,7 +4,6 @@ import os,sys,re
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE)
 
-from config import setting
 from core import atm
 from core.auth import login_required
 userdata = atm.userdata
@@ -95,15 +94,14 @@ def menu_select(menu_no,select_num):
         'menu0': menu_list0,
         'menu1': menu_list1,
         'menu2': menu_list2
-
+    }
 
     if select_num in menu_level[menu_no]:
-        if menu_no == 'menu0' and select_num == '1':
-            print('1')
+        if menu_no == 'menu0' and select_num == '1' :
             return menu_level[menu_no][select_num](userdata,'general_account')
-        elif menu_no == 'menu0' and select_num == '2':
+        elif menu_no == 'menu0' and select_num == '2' :
             return menu_level[menu_no][select_num](userdata,'admin')
-        else:
+        else :
             print(menu_no,select_num)
             return menu_level[menu_no][select_num]()
     else:

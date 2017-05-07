@@ -3,24 +3,21 @@
 import os,sys,re
 BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE)
-
-
-from core import atm
+from core.atm import userdata
+from core.atm import input_handle
 from core import db_handle
 from config.logger import log
 dbssc = db_handle.dbapi_select_single_col
 dbssv = db_handle.dbapi_select_single_value
 
-accdata = atm.userdata
-
 def auth(user_type):
     login_info_dis = ['用户名','密码']
-    username,password = atm.input_handle(login_info_dis)
+    username,password =  input_handle(login_info_dis)
     if username in dbssc('select username from account where rule = %s'%(user_type)):
         if password == dbssv('select password from account where username = %s'%(username)) and dbssv('select account_status from account where username = %s'%(username)) == 'open' :
-            accdata['auth_status'] = True
-            accdata['userid'] = dbssv('select userid from account where username = %s'%(username))
-            accdata['user_type'] = user_type
+            userdata['auth_status'] = True
+            userdata['userid'] = dbssv('select userid from account where username = %s'%(username))
+            userdata['user_type'] = user_type
             log.info('用户 %s 认证登陆成功'%(username))
             return True
         elif dbssv('select account_status from account where username = %s'%(username)) == 'locked':
