@@ -37,7 +37,7 @@ userid|username|account_status|password|rule|create_time
 - 账户信息表 party
 
 party_id|userid|card_num|card_type|create_time|card_balance|card_limit
----|---|--|---|---|---|---
+---|---|---|---|---|---|---
 账户ID|用户ID|账户号|账户类型|开户时间|账户余额|账户额度
 
 - 交易费率表  transaction_rate 
