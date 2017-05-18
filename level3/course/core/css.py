@@ -105,7 +105,7 @@ class School(object):
     school_list = []
 
     def create_school(self,school_name,school_area):
-
+        pass
 
 class Class(School):
     """
@@ -127,7 +127,7 @@ class School_People(object):
     def __init__(self,school_name):
         self.school_name = school_name
 
-    def
+
 class Teacher(School_People):
     """
     老师类
