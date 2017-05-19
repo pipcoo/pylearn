@@ -7,43 +7,6 @@ sys.path.append(BASE)
 
 from config.logger import log
 
-menu = {
-    '后台管理':{
-        '学校管理':{
-            "查看学校":'',
-            "添加学校":'',
-            "删除学校":''
-        },
-        '班级管理':{
-            "查看班级": '',
-            "添加班级": '',
-            "删除班级": ''
-        },
-        '课程管理':{
-            "查看课程": '',
-            "添加课程": '',
-            "删除课程": ''
-        },
-        '讲师管理':{
-            "查看讲师": '',
-            "添加讲师": '',
-            "删除讲师": ''
-        }
-    },
-    '讲师':{
-        '管理班级':'',
-        '选择上课班级':'',
-        '查看班级学员列表':'',
-        '修改学员成绩':''
-    },
-    '学员':{
-        '注册':'',
-        '交学费':'',
-        '选择班级':''
-    }
-}
-
-
 class Menu(object):
     """
     菜单类
@@ -54,7 +17,7 @@ class Menu(object):
         self.menu_list = []
         self.menu_list.append(self.menu)
 
-    def print_menu(self):
+    def display_menu(self):
         """
         打印菜单
         :return: 
@@ -77,7 +40,7 @@ class Menu(object):
         选择菜单
         :return: 
         """
-        current_level,current_menu = self.print_menu()
+        current_level,current_menu = self.display_menu()
         exit_flag = False
         while not exit_flag:
             _input = input('输入选择的编码：\n>>')
@@ -104,16 +67,19 @@ class School(object):
     """
     school_list = []
 
-    def create_school(self,school_name,school_area):
-        pass
-
-class Class(School):
-    """
-    班级类
-    """
     def __init__(self,school_name,school_area):
         self.school_name = school_name
         self.school_area = school_area
+
+
+class Classes(object):
+    """
+    班级类
+    """
+    def __init__(self,class_name,school_area):
+        self.class_name = class_name
+        self.school_area = school_area
+
 class Course(object):
     """
     课程类
@@ -128,6 +94,7 @@ class School_People(object):
         self.school_name = school_name
 
 
+
 class Teacher(School_People):
     """
     老师类
@@ -138,7 +105,62 @@ class Student(School_People):
     """
     学生类
     """
-    pass
 
-a = Menu(menu)
-a.select_menu()
+    def __init__(self,school_name):
+        super(Student())
+
+
+class Administrator(object):
+    """
+    管理员
+    """
+    def view(self):
+        pass
+
+    def modify(self):
+        pass
+
+    def delete(self):
+        pass
+
+
+if __name__ == '__main__':
+
+    menu = {
+        '后台管理': {
+            '学校管理': {
+                "查看学校": '',
+                "添加学校": '',
+                "删除学校": ''
+            },
+            '班级管理': {
+                "查看班级": '',
+                "添加班级": '',
+                "删除班级": ''
+            },
+            '课程管理': {
+                "查看课程": '',
+                "添加课程": '',
+                "删除课程": ''
+            },
+            '讲师管理': {
+                "查看讲师": '',
+                "添加讲师": '',
+                "删除讲师": ''
+            }
+        },
+        '讲师': {
+            '管理班级': '',
+            '选择上课班级': '',
+            '查看班级学员列表': '',
+            '修改学员成绩': ''
+        },
+        '学员': {
+            '注册': '',
+            '交学费': '',
+            '选择班级': ''
+        }
+    }
+
+    a = Menu(menu)
+    a.select_menu()
