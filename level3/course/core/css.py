@@ -65,20 +65,19 @@ class School(object):
     """
     学校类
     """
-    school_list = []
-
     def __init__(self,school_name,school_area):
         self.school_name = school_name
         self.school_area = school_area
 
 
-class Classes(object):
+class Classes(School):
     """
     班级类
     """
-    def __init__(self,class_name,school_area):
+    def __init__(self,school_name,school_area,class_name):
+        super().__init__(school_name,school_area)
         self.class_name = class_name
-        self.school_area = school_area
+
 
 class Course(object):
     """
