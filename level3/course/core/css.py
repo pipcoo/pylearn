@@ -106,7 +106,7 @@ class Student(School_People):
     学生类
     """
 
-    def __init__(self,school_name):
+    def __init__(self,school_name):9
         super(Student())
 
 
