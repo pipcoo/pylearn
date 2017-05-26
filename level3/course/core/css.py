@@ -89,10 +89,10 @@ class School_People(object):
     """
     学校的人类
     """
-    def __init__(self,school_name):
+    def __init__(self,school_name,name,age):
         self.school_name = school_name
-
-
+        self.name = name
+        self.age = age
 
 class Teacher(School_People):
     """
@@ -105,8 +105,9 @@ class Student(School_People):
     学生类
     """
 
-    def __init__(self,school_name):9
-        super(Student())
+    def __init__(self,school_name,name,age):
+        super().__init__(school_name,name,age)
+
 
 
 class Administrator(object):
