@@ -39,8 +39,7 @@ class Menu(object):
         """
         选择菜单
         :return: 
-        """
-        current_level,current_menu = self.display_menu()
+        """        current_level,current_menu = self.display_menu()
         exit_flag = False
         while not exit_flag:
             _input = input('输入选择的编码：\n>>')
@@ -59,8 +58,14 @@ class Menu(object):
             else:
                 print('请输入正确的编码')
 
+class inputfactory(object):
+    def __init__(self,keys):
+        self.keys = keys
 
-
+    def get_input(self,input_info):
+        _input = input('输入%s'% input_info)
+        return _input
+    def select_input(self,):
 class School(object):
     """
     学校类
@@ -85,28 +90,47 @@ class Course(object):
     """
     pass
 
-class School_People(object):
+class SchoolPeople(object):
     """
     学校的人类
     """
-    def __init__(self,school_name,name,age):
-        self.school_name = school_name
+    def __init__(self,name,age):
         self.name = name
         self.age = age
 
-class Teacher(School_People):
+class Teacher(SchoolPeople):
     """
     老师类
     """
-    pass
+    def __init__(self,name,age):
+        super().__init__(name,age)
 
-class Student(School_People):
+class Student(SchoolPeople):
     """
     学生类
     """
+    def __init__(self,name,age):
+        super().__init__(name,age)
 
-    def __init__(self,school_name,name,age):
-        super().__init__(school_name,name,age)
+
+class LearnRecord(object):
+    """
+    学习记录
+    """
+    pass
+
+class teachRecord(object):
+    """
+    教学记录
+    """
+    pass
+
+class SchoolFactory(object):
+
+    @staticmethod
+    def create_shcool(self):
+
+
 
 
 
@@ -114,6 +138,9 @@ class Administrator(object):
     """
     管理员
     """
+    def create(self):
+        pass
+
     def view(self):
         pass
 
@@ -164,3 +191,5 @@ if __name__ == '__main__':
 
     a = Menu(menu)
     a.select_menu()
+
+
