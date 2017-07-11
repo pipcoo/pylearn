@@ -21,12 +21,16 @@ class School(object):
     """
     学校类
     """
-    def __init__(self,school_name,school_area):
+    def __init__(self,id,school_name,school_area):
+        self.id = id
         self.school_name = school_name
         self.school_area = school_area
 
+    def save(self):
 
-class Classes(School):
+
+
+class Classes(object):
     """
     班级类
     """
