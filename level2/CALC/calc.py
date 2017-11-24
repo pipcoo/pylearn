@@ -134,6 +134,7 @@ def calc(f_list):
                 del f_list[f_index]
             add_result=add(f_list)                                       #计算完所有乘除减 将列表所有值相加
             exit_flag = True
+            pen
 
     return add_result
 
