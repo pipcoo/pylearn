@@ -1,0 +1,32 @@
+services:
+  mcs0:
+    environment: ['SETTING_URL=http://cf.touchfound.net/docker-config-file/mcs/uat/mcs-config.xml',
+      APPNAME=mcs0, RUNENV=uat, IP=192.168.20.142, KEEP_PORT=8031, HTTP_PORT=8011]
+    image: registry.cn-beijing.aliyuncs.com/touchfound/mcs:3.0.0
+    ports: ['20031:8031', '8011:8011']
+    volumes: ['/data/mcsdata/logs/mcs0:/opt/launcher/logs']
+  mcs1:
+    environment: ['SETTING_URL=http://cf.touchfound.net/docker-config-file/mcs/uat/mcs-config.xml',
+      APPNAME=mcs1, RUNENV=uat, IP=192.168.20.142, KEEP_PORT=8031, HTTP_PORT=8011]
+    image: registry.cn-beijing.aliyuncs.com/touchfound/mcs:3.0.0
+    ports: ['20032:8031', '8012:8011']
+    volumes: ['/data/mcsdata/logs/mcs1:/opt/launcher/logs']
+  mcs2:
+    environment: ['SETTING_URL=http://cf.touchfound.net/docker-config-file/mcs/uat/mcs-config.xml',
+      APPNAME=mcs2, RUNENV=uat, IP=192.168.20.142, KEEP_PORT=8031, HTTP_PORT=8011]
+    image: registry.cn-beijing.aliyuncs.com/touchfound/mcs:3.0.0
+    ports: ['20033:8031', '8013:8011']
+    volumes: ['/data/mcsdata/logs/mcs2:/opt/launcher/logs']
+  mcs3:
+    environment: ['SETTING_URL=http://cf.touchfound.net/docker-config-file/mcs/uat/mcs-config.xml',
+      APPNAME=mcs3, RUNENV=uat, IP=192.168.20.142, KEEP_PORT=8031, HTTP_PORT=8011]
+    image: registry.cn-beijing.aliyuncs.com/touchfound/mcs:3.0.0
+    ports: ['20034:8031', '8014:8011']
+    volumes: ['/data/mcsdata/logs/mcs3:/opt/launcher/logs']
+  mcs4:
+    environment: ['SETTING_URL=http://cf.touchfound.net/docker-config-file/mcs/uat/mcs-config.xml',
+      APPNAME=mcs4, RUNENV=uat, IP=192.168.20.142, KEEP_PORT=8031, HTTP_PORT=8011]
+    image: registry.cn-beijing.aliyuncs.com/touchfound/mcs:3.0.0
+    ports: ['20035:8031', '8015:8011']
+    volumes: ['/data/mcsdata/logs/mcs4:/opt/launcher/logs']
+version: '2'
