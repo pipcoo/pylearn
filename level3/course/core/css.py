@@ -1,6 +1,6 @@
 # @---wufeng---
 
-from core import log
+from core.config import *
 
 class inputfactory(object):
     def __init__(self,keys):

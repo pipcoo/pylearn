@@ -16,10 +16,10 @@ accessKey = 'LTAIUpCBOQBUOtWz'
 #secretKey get from aliyun account console
 secretKey = 'BxZvUjgWJLkxstoPhLbZlMjcSC30Nu'
 #MQTT GroupID,get from mq console
-groupId = 'GID_UPER'
-client_id=groupId+'@@@'+'TEST00002'
+groupId = 'GID_UPER_PO'
+client_id=groupId+'@@@'+'TEST10004'
 # Topic
-topic = 'toucharm_vm_k/#'
+topic = 'toucharm_vm_po/python/test3'
 #MQTT endPoint get from mq console
 brokerUrl='post-cn-mp909e7be0o.mqtt.aliyuncs.com'
 
@@ -49,7 +49,7 @@ def on_disconnect(client, userdata, rc):
         print('Unexpected disconnection %s' % rc)
 
 
-client = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
+client = mqtt.Client(client_id, protocol=mqtt.MQTTv311,clean_session=False)
 client.on_log = on_log
 client.on_connect = on_connect
 client.on_message = on_message
@@ -57,7 +57,6 @@ client.on_disconnect = on_disconnect
 password = base64.b64encode(hmac.new(secretKey.encode(), groupId.encode(), sha1).digest()).decode()
 client.username_pw_set(accessKey, password)
 client.connect(brokerUrl, 1883, 60)
-client.subscribe(topic, 2)
-
+client.subscribe(topic, 1)
 client.loop_forever()
 

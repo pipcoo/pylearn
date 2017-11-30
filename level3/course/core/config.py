@@ -7,7 +7,7 @@ from run import base_dir
 LOGFILE = "%s/logs/css.log" % base_dir  # 日志文件名称
 LOGLEVEL = "DEBUG"  # 日志级别
 NOW = time.strftime('%Y-%m-%d %H:%M:%S')  # 当前时间格式
-DBFILE = "%s/data/css.dat" % base_dir
+DATAPATH = "%s/data" % base_dir
 
 logging.basicConfig(filename=LOGFILE,  # 日志记录 模块配置
                     format='[%(asctime)s] %(levelname)s: %(message)s',

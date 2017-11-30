@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import uuid,hashlib,time,pickle
+from core.config import *
 
 # from config.setting import FILEDB
 
@@ -18,24 +19,17 @@ class dbfile(object):
     def __init__(self,file_name,file_type):
         self.file_name = file_name
         self.file_type = file_type
-        self.file_path = FILEDB + '/' + file_type
+        self.file_path = DATAPATH + '/' + file_type
         self.datafile = file_path + '/' + file_name
         if not os.path.exists(self.file_path):
             os.mkdir(self.file_path)
 
-    # def save(self,data):
-    #     with open (self.datafile,'w') as df:r
-    #         pickle.dump(df,data)
+    def save(self,data):
+        with open (self.datafile,'w') as fp
+            pickle.dump(df,data)
 
 
+    def read(self):
+        return pickle.load(self.datafile)
 
 
-def save():
-    with open('',w) as fp:
-        pickle.dump(data,fp)
-
-
-
-if __name__ == '__main__':
-    print(create_uuid())
-    print(create_md5())
