@@ -1,9 +1,6 @@
 # @---wufeng---
-import os,sys
-BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE)
-from config.logger import log
-from core.module import menu
+
+from core import log
 
 class inputfactory(object):
     def __init__(self,keys):
@@ -26,7 +23,6 @@ class School(object):
         self.school_name = school_name
         self.school_area = school_area
 
-    def save(self):
 
 
 
@@ -103,46 +99,5 @@ class Administrator(object):
     def delete(self):
         pass
 
-
-if __name__ == '__main__':
-
-    menu_info = {
-        '后台管理': {
-            '学校管理': {
-                "查看学校": '',
-                "添加学校": '',
-                "删除学校": ''
-            },
-            '班级管理': {
-                "查看班级": '',
-                "添加班级": '',
-                "删除班级": ''
-            },
-            '课程管理': {
-                "查看课程": '',
-                "添加课程": '',
-                "删除课程": ''
-            },
-            '讲师管理': {
-                "查看讲师": '',
-                "添加讲师": '',
-                "删除讲师": ''
-            }
-        },
-        '讲师': {
-            '管理班级': '',
-            '选择上课班级': '',
-            '查看班级学员列表': '',
-            '修改学员成绩': ''
-        },
-        '学员': {
-            '注册': '',
-            '交学费': '',
-            '选择班级': ''
-        }
-    }
-
-    a = menu.Menu(menu_info)
-    a.select_menu()
 
 
