@@ -11,6 +11,8 @@ Desktop.ini
 dist
 build
 .idea
+__pycache__
+*.pyc
 
 # My configurations:
 *.log
