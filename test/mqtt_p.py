@@ -16,10 +16,10 @@ accessKey = 'LTAIUpCBOQBUOtWz'
 #secretKey get from aliyun account console
 secretKey = 'BxZvUjgWJLkxstoPhLbZlMjcSC30Nu'
 #MQTT GroupID,get from mq console
-groupId = 'GID_UPER_PO'
+groupId = 'GID_UPER'
 client_id=groupId+'@@@'+'TEST10003'
 # Topic
-topic = 'toucharm_vm_po/python/test3'
+topic = 'toucharm_vm/test'
 #MQTT endPoint get from mq console
 brokerUrl='post-cn-mp909e7be0o.mqtt.aliyuncs.com'
 
@@ -62,6 +62,8 @@ client.subscribe(topic, 1)
 for i in range(1, 11):
     print(i)
     rc = client.publish(topic, str(i*i*i*i), qos=1)
+    client.
+
     print ('rc: %s' % rc)
     time.sleep(0.1)
 print('-------')
