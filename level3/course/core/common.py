@@ -24,12 +24,12 @@ class dbfile(object):
         if not os.path.exists(self.file_path):
             os.mkdir(self.file_path)
 
-    def save(self,data):
-        with open (self.datafile,'w') as fp
-            pickle.dump(df,data)
-
-
-    def read(self):
-        return pickle.load(self.datafile)
+    # def save(self,data):
+    #     with open (self.datafile,'w') as fp
+    #         pickle.dump(df,data)
+    #
+    #
+    # def read(self):
+    #     return pickle.load(self.datafile)
 
 
