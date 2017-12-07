@@ -17,7 +17,11 @@ accessKey = 'LTAIUpCBOQBUOtWz'
 secretKey = 'BxZvUjgWJLkxstoPhLbZlMjcSC30Nu'
 #MQTT GroupID,get from mq console
 groupId = 'GID_UPER'
+<<<<<<< HEAD
 client_id = groupId+'@@@'+'TEST10003'
+=======
+client_id=groupId+'@@@'+'TEST10003'
+>>>>>>> 44eacdefcd3df6db16b977047b4b6cdc3fedc4a8
 # Topic
 topic = 'toucharm_vm/test'
 #MQTT endPoint get from mq console
@@ -61,6 +65,8 @@ client.subscribe(topic, 1)
 
 for i in range(1, 11):
     rc = client.publish(topic, str(i*i*i*i), qos=1)
+    client.
+
     print ('rc: %s' % rc)
     time.sleep(0.1)
 print('-------')
