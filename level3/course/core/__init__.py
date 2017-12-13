@@ -1,6 +1,7 @@
 # @---wufeng---
 
 from core.config import *
-from core import view
+from core.common import *
+from core.css import *
+from core.view import *
 
-menu = view.Menu(MENU)

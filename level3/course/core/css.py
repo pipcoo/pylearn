@@ -24,9 +24,6 @@ class School(object):
         self.school_name = school_name
         self.school_area = school_area
 
-s1 = School(create_uuid,'北京分校','beijing')
-
-
 
 class Classes(object):
     """

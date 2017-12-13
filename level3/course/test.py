@@ -5,6 +5,8 @@ import os,sys
 base_dir=os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0,base_dir)
 
-from core import css
+import core
 
-s1 = css.School(create_uuid,'beijing','beijing')
+menu =core.Menu(core.MENU)
+menu.select()
+s1 = core.School(core.create_uuid,'beijing','beijing')
